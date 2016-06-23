@@ -1,34 +1,32 @@
-package com.qwert2603.vkmessagestat.base;
-
-import java.util.List;
+package com.qwert2603.vkmessagestat.base
 
 /**
  * Представление списка для шаблона MVP.
  *
- * @param <T> тип элемента списка.
+ * @param T тип элемента списка.
  */
-public interface ListView<T> extends BaseView {
+interface ListView<T> : BaseView {
 
     /**
      * Отобразить сообщение о загрузке.
      */
-    void showLoading();
+    fun showLoading()
 
     /**
      * Отобразить сообщение об ошибке загрузки.
      */
-    void showError();
+    fun showError()
 
     /**
      * Отобразить сообщение о том, что список пуст.
      */
-    void showEmpty();
+    fun showEmpty()
 
     /**
      * Отобразить список.
-     *
+
      * @param list список для отображения.
      */
-    void showList(List<T> list);
+    fun showList(list: List<T>)
 
 }

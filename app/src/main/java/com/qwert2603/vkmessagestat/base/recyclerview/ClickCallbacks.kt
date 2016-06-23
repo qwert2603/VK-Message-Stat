@@ -1,13 +1,13 @@
-package com.qwert2603.vkmessagestat.base.recyclerview;
+package com.qwert2603.vkmessagestat.base.recyclerview
 
 /**
  * Callback для нажатия на элемент.
  */
-public interface ClickCallbacks {
+interface ClickCallbacks {
     /**
      * Нажатие на элемент.
      *
      * @param position позиция нажатого элемента
      */
-    void onItemClicked(int position);
+    fun onItemClicked(position: Int)
 }
