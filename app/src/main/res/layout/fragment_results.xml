@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ViewAnimator
+        android:id="@+id/view_animator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="16dp"
+                android:text="@string/calculating_statistic"
+                android:textColor="@color/colorAccent"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/done_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_text_view"
+                android:layout_marginStart="16dp"
+                android:text="X"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="28sp"/>
+
+            <TextView
+                android:id="@+id/of_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/done_text_view"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/done_text_view"
+                android:text="@string/of"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp"/>
+
+            <TextView
+                android:id="@+id/total_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_text_view"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/of_text_view"
+                android:text="X"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="28sp"/>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/done_text_view"
+                android:max="100"
+                android:progress="26"/>
+
+        </RelativeLayout>
+
+    </ViewAnimator>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/results_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>

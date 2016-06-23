@@ -5,6 +5,8 @@ import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdap
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalPresenter;
 import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalAdapter;
 import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalPresenter;
+import com.qwert2603.vkmessagestat.results.ResultsAdapter;
+import com.qwert2603.vkmessagestat.results.ResultsPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,6 +37,16 @@ public class ViewModule {
     @Provides
     QuantityIntervalAdapter mQuantityIntervalAdapter() {
         return new QuantityIntervalAdapter();
+    }
+
+    @Provides
+    ResultsPresenter mResultsPresenter() {
+        return new ResultsPresenter();
+    }
+
+    @Provides
+    ResultsAdapter mResultsAdapter() {
+        return new ResultsAdapter();
     }
 
 }

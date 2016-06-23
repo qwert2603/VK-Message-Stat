@@ -3,4 +3,6 @@
     <string name="login_failed">Login failed!</string>
     <string name="choose_interval_for_statistic">Choose interval for statistic:</string>
     <string name="all">All</string>
+    <string name="calculating_statistic">Calculating statistic...</string>
+    <string name="of">of</string>
 </resources>

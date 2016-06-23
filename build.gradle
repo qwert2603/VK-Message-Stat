@@ -16,6 +16,8 @@ buildscript {
     }
 }
 
+apply plugin: 'kotlin'
+
 allprojects {
     repositories {
         jcenter()
@@ -24,4 +26,10 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
