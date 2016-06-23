@@ -104,7 +104,7 @@ public abstract class BaseRecyclerViewAdapter
         holder.setModel(model);
         holder.bindPresenter();
         // отображаем выделен элемент или нет.
-        mRecyclerViewSelector.showWhetherItemSelected(holder.mItemView, position);
+        mRecyclerViewSelector.showWhetherItemSelected(holder.itemView, position);
         mVHMap.put(model.getId(), holder);
     }
 
@@ -172,18 +172,16 @@ public abstract class BaseRecyclerViewAdapter
      * и хранящий ссылки на отображаемые View (TextView, например).
      */
     public abstract class RecyclerViewHolder extends RecyclerView.ViewHolder implements BaseView {
-        public View mItemView;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
-            mItemView = itemView;
             // назначаем callback'и для клика и долгого клика по элементу.
-            mItemView.setOnClickListener(v -> {
+            itemView.setOnClickListener(v -> {
                 if (mClickCallbacks != null) {
                     mClickCallbacks.onItemClicked(getLayoutPosition());
                 }
             });
-            mItemView.setOnLongClickListener(v -> {
+            itemView.setOnLongClickListener(v -> {
                 if (mLongClickCallbacks != null) {
                     mLongClickCallbacks.onItemLongClicked(getLayoutPosition());
                 }
@@ -201,9 +199,9 @@ public abstract class BaseRecyclerViewAdapter
         /**
          * Назначить модель для этого элемента.
          *
-         * @param model объект модели.
+         * @param oneResult объект модели.
          */
-        protected abstract void setModel(M model);
+        protected abstract void setModel(M oneResult);
 
         /**
          * Привязать презентер, предназначенный для этого ViewHolder'a.

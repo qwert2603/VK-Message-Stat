@@ -4,6 +4,7 @@ import com.qwert2603.vkmessagestat.prelude.PreludeFragment;
 import com.qwert2603.vkmessagestat.prelude.PreludePresenter;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdapter;
 import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalAdapter;
+import com.qwert2603.vkmessagestat.results.ResultsFragment;
 
 import javax.inject.Singleton;
 
@@ -25,4 +26,6 @@ public interface AppComponent {
     void inject(TimeIntervalAdapter.TimeIntervalViewHolder timeIntervalViewHolder);
 
     void inject(QuantityIntervalAdapter.QuantityIntervalViewHolder quantityIntervalViewHolder);
+
+    void inject(ResultsFragment resultsFragment);
 }
