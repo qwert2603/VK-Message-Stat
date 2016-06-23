@@ -1,4 +1,4 @@
-package com.qwert2603.vkmessagestat.one_result
+package com.qwert2603.vkmessagestat.oneresult
 
 import com.qwert2603.vkmessagestat.base.BaseView
 

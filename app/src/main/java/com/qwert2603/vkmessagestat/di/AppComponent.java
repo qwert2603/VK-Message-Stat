@@ -2,8 +2,8 @@ package com.qwert2603.vkmessagestat.di;
 
 import com.qwert2603.vkmessagestat.prelude.PreludeFragment;
 import com.qwert2603.vkmessagestat.prelude.PreludePresenter;
-import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdapter;
-import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalAdapter;
+import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalViewHolder;
+import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalViewHolder;
 import com.qwert2603.vkmessagestat.results.ResultsFragment;
 
 import javax.inject.Singleton;
@@ -23,9 +23,9 @@ public interface AppComponent {
 
     void inject(PreludePresenter preludePresenter);
 
-    void inject(TimeIntervalAdapter.TimeIntervalViewHolder timeIntervalViewHolder);
-
-    void inject(QuantityIntervalAdapter.QuantityIntervalViewHolder quantityIntervalViewHolder);
-
     void inject(ResultsFragment resultsFragment);
+
+    void inject(TimeIntervalViewHolder timeIntervalViewHolder);
+
+    void inject(QuantityIntervalViewHolder quantityIntervalViewHolder);
 }

@@ -1,7 +1,6 @@
 package com.qwert2603.vkmessagestat.prelude;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -10,7 +9,6 @@ import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.base.BasePresenter;
 import com.qwert2603.vkmessagestat.model.QuantityInterval;
 import com.qwert2603.vkmessagestat.model.TimeInterval;
-import com.qwert2603.vkmessagestat.results.ResultsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +46,6 @@ public class PreludePresenter extends BasePresenter<Object, PreludeView> {
 
     public void onTimeSelected(int position) {
         Toast.makeText(mAppContext, String.valueOf(mTimeIntervals.get(position)), Toast.LENGTH_SHORT).show();
-        if (position == 2) {
-            // TODO: 23.06.2016
-            //Toast.makeText(mAppContext, "%TGTTGRGTRGTRGRT", Toast.LENGTH_SHORT).show();
-            mAppContext.startActivity(new Intent(mAppContext, ResultsActivity.class));
-        }
     }
 
     public void onQuantitySelected(int position) {

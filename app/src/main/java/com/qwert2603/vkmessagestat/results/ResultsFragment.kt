@@ -15,16 +15,16 @@ import com.qwert2603.vkmessagestat.util.LogUtils
 import kotlinx.android.synthetic.main.fragment_results.*
 import javax.inject.Inject
 
-class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
+open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     companion object {
         fun newInstance() = ResultsFragment()
     }
 
-    @Inject
+    @Inject @JvmField
     var resultsPresenter = ResultsPresenter()
 
-    @Inject
+    @Inject @JvmField
     var resultsAdapter = ResultsAdapter()
 
     override fun getPresenter() = resultsPresenter
