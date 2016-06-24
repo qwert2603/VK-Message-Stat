@@ -1,6 +1,7 @@
 package com.qwert2603.vkmessagestat.di;
 
 import com.qwert2603.vkmessagestat.Const;
+import com.qwert2603.vkmessagestat.hepler.VkApiHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -26,5 +27,11 @@ public class ModelModule {
     @Named(Const.IO_THREAD)
     Scheduler provideSchedulerIO() {
         return Schedulers.io();
+    }
+
+    @Provides
+    @Singleton
+    VkApiHelper mVkApiHelper() {
+        return new VkApiHelper();
     }
 }

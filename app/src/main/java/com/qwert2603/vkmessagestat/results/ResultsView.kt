@@ -9,4 +9,5 @@ interface ResultsView : BaseView {
     fun showTotal(total: Int)
     fun showDone(done: Int)
     fun showResultList(oneResults: List<OneResult>)
+    fun showNoInternet()
 }

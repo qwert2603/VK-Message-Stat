@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Базовый презентер для шаблона MVP.
  *
@@ -18,6 +20,11 @@ public abstract class BasePresenter<M, V extends BaseView> {
      * Готово ли представление отображать данные.
      */
     private boolean mIsViewReady = false;
+
+    protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+
+    public BasePresenter() {
+    }
 
     /**
      * Назначить модель.
@@ -60,6 +67,7 @@ public abstract class BasePresenter<M, V extends BaseView> {
             onViewNotReady();
         }
         mView = null;
+        mCompositeSubscription.clear();
     }
 
     /**

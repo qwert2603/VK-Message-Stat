@@ -11,7 +11,7 @@ import javax.inject.Inject
 class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneResult, OneResultViewHolder>) :
         BaseRecyclerViewHolder<OneResult, OneResultPresenter>(itemView, adapter), OneResultView {
 
-    @Inject
+    @Inject @JvmField
     var oneResultPresenter = OneResultPresenter()
 
     override fun getPresenter() = oneResultPresenter

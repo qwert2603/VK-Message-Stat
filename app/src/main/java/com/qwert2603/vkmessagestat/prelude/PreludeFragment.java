@@ -1,5 +1,6 @@
 package com.qwert2603.vkmessagestat.prelude;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,11 @@ import com.qwert2603.vkmessagestat.model.QuantityInterval;
 import com.qwert2603.vkmessagestat.model.TimeInterval;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdapter;
 import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalAdapter;
+import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.results.ResultsActivity;
+import com.qwert2603.vkmessagestat.results.ResultsFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -76,12 +82,20 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
     }
 
     @Override
-    public void showTimes(List<TimeInterval> times) {
+    public void showTimes(@NonNull List<TimeInterval> times) {
         mTimeIntervalAdapter.setModelList(times);
     }
 
     @Override
-    public void showQuantities(List<QuantityInterval> quantities) {
+    public void showQuantities(@NonNull List<QuantityInterval> quantities) {
         mQuantityIntervalAdapter.setModelList(quantities);
+    }
+
+    @Override
+    public void moveToResults(@NotNull IntervalType intervalType, int value) {
+        Intent intent = new Intent(getActivity(), ResultsActivity.class);
+        intent.putExtra(ResultsFragment.INTERVAL_TYPE_ORDINAL_KEY, intervalType.ordinal());
+        intent.putExtra(ResultsFragment.INTERVAL_VALUE_KEY, value);
+        startActivity(intent);
     }
 }

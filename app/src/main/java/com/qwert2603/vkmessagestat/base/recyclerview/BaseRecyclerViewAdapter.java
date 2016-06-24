@@ -19,8 +19,7 @@ import java.util.Map;
  * @param <M>  тип модели, отображаемой в каждом элементе.
  * @param <VH> тип объекта (ViewHolder), отвечающего за отображение данных в отдельном элементе.
  */
-public abstract class BaseRecyclerViewAdapter
-        <M extends Identifiable, VH extends BaseRecyclerViewHolder>
+public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends BaseRecyclerViewHolder>
         extends RecyclerView.Adapter<VH> {
 
     private volatile List<M> mModelList = new ArrayList<>();

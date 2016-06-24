@@ -1,6 +1,7 @@
 package com.qwert2603.vkmessagestat.results
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,20 @@ import com.qwert2603.vkmessagestat.base.BaseFragment
 import com.qwert2603.vkmessagestat.inflate
 import com.qwert2603.vkmessagestat.model.OneResult
 import com.qwert2603.vkmessagestat.showIfNotYet
-import com.qwert2603.vkmessagestat.util.LogUtils
 import kotlinx.android.synthetic.main.fragment_results.*
 import javax.inject.Inject
 
 open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     companion object {
-        fun newInstance() = ResultsFragment()
+        @JvmField val INTERVAL_TYPE_ORDINAL_KEY = "interval_type_ordinal"
+        @JvmField val INTERVAL_VALUE_KEY = "interval_value"
+
+        fun newInstance(args: Bundle): ResultsFragment {
+            val fragment = ResultsFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     @Inject @JvmField
@@ -31,7 +38,9 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         VkMessageStatApplication.getAppComponent().inject(this)
-
+        val intervalType = IntervalType.values()[arguments.getInt(INTERVAL_TYPE_ORDINAL_KEY)]
+        val value = arguments.getInt(INTERVAL_VALUE_KEY)
+        resultsPresenter.setInterval(intervalType, value)
         super.onCreate(savedInstanceState)
     }
 
@@ -44,14 +53,12 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
         results_recycler_view.layoutManager = LinearLayoutManager(activity)
         results_recycler_view.adapter = resultsAdapter
-        LogUtils.d(resultsAdapter.toString())
+
+        view_animator.getChildAt(Layer.LOADING_ERROR.ordinal).setOnClickListener { resultsPresenter.onReloadClicked() }
     }
 
     override fun showLayer(layer: Layer) {
-        when (layer) {
-            Layer.CALCULATING -> view_animator.showIfNotYet(0)
-            Layer.RESULTS -> view_animator.showIfNotYet(1)
-        }
+        view_animator.showIfNotYet(layer.ordinal)
     }
 
     override fun showProgress(process: Int) {
@@ -67,6 +74,10 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
     }
 
     override fun showResultList(oneResults: List<OneResult>) {
-        throw UnsupportedOperationException()
+        resultsAdapter.setModelList(oneResults)
+    }
+
+    override fun showNoInternet() {
+        Snackbar.make(view_animator, R.string.no_internet, Snackbar.LENGTH_SHORT).show()
     }
 }

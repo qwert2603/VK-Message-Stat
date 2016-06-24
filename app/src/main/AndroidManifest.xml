@@ -25,11 +25,13 @@
 
         <activity
             android:name=".prelude.PreludeActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
             android:name=".results.ResultsActivity"
+            android:parentActivityName=".prelude.PreludeActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
