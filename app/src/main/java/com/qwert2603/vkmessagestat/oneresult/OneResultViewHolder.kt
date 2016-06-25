@@ -27,7 +27,7 @@ class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneR
     }
 
     override fun showPercent(percent: Double) = with(itemView) {
-        percent_text_view.text = percent.toString() + "%"
+        percent_text_view.text = String.format("%.2f%%", percent)
     }
 
     override fun showQuantity(quantity: Int) = with(itemView) {

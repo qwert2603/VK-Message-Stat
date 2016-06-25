@@ -46,7 +46,7 @@ public class DataManagerImpl implements DataManager {
         return mVkApiHelper.getUsersById(map.keysAsList())
                 .flatMap(Observable::from)
                 .map(user -> new OneResult(user, map.getPercent(user.id), map.get(user.id)))
-                .toList();
+                .toSortedList((r1, r2) -> Integer.compare(r2.getQuantity(), r1.getQuantity()));
     }
 
 }

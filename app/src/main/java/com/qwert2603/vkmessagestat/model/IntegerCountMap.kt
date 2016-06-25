@@ -1,5 +1,6 @@
 package com.qwert2603.vkmessagestat.model
 
+import com.qwert2603.vkmessagestat.util.LogUtils
 import java.util.*
 
 class IntegerCountMap : HashMap<Int, Int>() {
@@ -18,7 +19,14 @@ class IntegerCountMap : HashMap<Int, Int>() {
     }
 
     fun addAll(anth: IntegerCountMap): IntegerCountMap {
-        anth.forEach { k, v -> add(k, v) }
+        LogUtils.d("before == " + toString())
+        for (k in anth.keys) {
+            val v = anth[k]
+            if (v != null) {
+                add(k, v)
+            }
+        }
+        LogUtils.d("after == " + toString())
         return this
     }
 

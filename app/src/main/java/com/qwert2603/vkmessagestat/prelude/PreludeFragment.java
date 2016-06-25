@@ -60,7 +60,6 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
     @Override
     public void onCreate(Bundle savedInstanceState) {
         VkMessageStatApplication.getAppComponent().inject(PreludeFragment.this);
-
         super.onCreate(savedInstanceState);
     }
 

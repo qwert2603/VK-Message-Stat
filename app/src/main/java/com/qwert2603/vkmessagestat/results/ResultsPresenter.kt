@@ -3,27 +3,29 @@ package com.qwert2603.vkmessagestat.results
 import android.content.Context
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.BasePresenter
-import com.qwert2603.vkmessagestat.mock.MockContext
+import com.qwert2603.vkmessagestat.isInternetConnected
+import com.qwert2603.vkmessagestat.mock.Mocks
 import com.qwert2603.vkmessagestat.model.DataManager
-import com.qwert2603.vkmessagestat.model.DataManagerImpl
 import com.qwert2603.vkmessagestat.model.Results
-import com.qwert2603.vkmessagestat.util.InternetUtils
 import com.qwert2603.vkmessagestat.util.LogUtils
 import javax.inject.Inject
 
 class ResultsPresenter : BasePresenter<Results, ResultsView>() {
 
-    init {
-        VkMessageStatApplication.getAppComponent().inject(this)
-    }
+    @Inject @JvmField
+    var appContext : Context = Mocks.MOCK_CONTEXT
 
     @Inject @JvmField
-    var appContext: Context = MockContext()
-
-    @Inject @JvmField
-    var dataManager : DataManager = DataManagerImpl() //todo: use mock
+    var dataManager : DataManager = Mocks.MOCK_DATA_MANAGER
 
     var error = false
+
+    override fun bindView(view: ResultsView?) {
+        super.bindView(view)
+        if (appContext == Mocks.MOCK_CONTEXT) {
+            VkMessageStatApplication.getAppComponent().inject(this)
+        }
+    }
 
     fun setInterval(intervalType: IntervalType, value: Int) {
         model = Results(intervalType, value, -1, -1, emptyList())
@@ -49,7 +51,7 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     }
 
     fun onReloadClicked() {
-        error = !InternetUtils.isInternetConnected(appContext)
+        error = !appContext.isInternetConnected()
         updateView()
         if (!error) {
             if (model != null) {
@@ -61,8 +63,6 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     }
 
     fun loadStatistic() {
-        LogUtils.d(appContext.toString())
-        LogUtils.d(dataManager.toString())
         val subscription = dataManager.getMessageStatistic(model.intervalType, model.value)
                 .subscribe (
                         { results -> model = results },

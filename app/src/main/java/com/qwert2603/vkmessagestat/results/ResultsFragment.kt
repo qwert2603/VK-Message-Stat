@@ -38,10 +38,10 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         VkMessageStatApplication.getAppComponent().inject(this)
+        super.onCreate(savedInstanceState)
         val intervalType = IntervalType.values()[arguments.getInt(INTERVAL_TYPE_ORDINAL_KEY)]
         val value = arguments.getInt(INTERVAL_VALUE_KEY)
         resultsPresenter.setInterval(intervalType, value)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

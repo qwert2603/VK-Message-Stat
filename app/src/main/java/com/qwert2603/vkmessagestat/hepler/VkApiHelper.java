@@ -4,8 +4,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 
+import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -19,7 +21,6 @@ import com.vk.sdk.api.model.VKUsersArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,14 +92,22 @@ public class VkApiHelper {
                 minTime = Integer.MIN_VALUE;
                 break;
             case TIME:
-                minTime = value != -1 ? (int) (System.currentTimeMillis() / 1000) : Integer.MIN_VALUE;
+                minTime = value != -1
+                        ? ((int) (System.currentTimeMillis() / 1000) - value * Const.SECONDS_PER_HOUR)
+                        : Integer.MIN_VALUE;
+                break;
         }
         final int finalMinTime = minTime;
+        LogUtils.d("finalMinTime == " + finalMinTime);
         return getLastMessageId()
-                .flatMap(lastId -> getStarts(lastId, value))
+                .flatMap(lastId -> getStarts(lastId, value))    //todo передавать правильное value для time-interval
+                .doOnNext(s -> LogUtils.d("start == " + s))
                 .flatMap(start -> getMessageStatistic(start, finalMinTime))
+                .doOnNext(m -> LogUtils.d("getMessageStatistic" + m.toString()))
                 .takeWhile(IntegerCountMap::notEmpty)
-                .reduce(IntegerCountMap::addAll);
+                .doOnNext(m -> LogUtils.d("getMessageStatistic # takeWhile" + m.toString()))
+                .reduce(IntegerCountMap::addAll)
+                .doOnNext(map -> LogUtils.d("reduce == " + map));
     }
 
     private Observable<Integer> getStarts(int lastId, int value) {
@@ -115,9 +124,9 @@ public class VkApiHelper {
                 @Override
                 public void onComplete(VKResponse response) {
                     try {
-                        JSONObject response1 = response.json.getJSONObject("response");
-                        JSONArray ids = response1.getJSONArray("ids");
-                        JSONArray time = response1.getJSONArray("time");
+                        JSONArray jsonArray = response.json.getJSONArray("response");
+                        JSONArray ids = jsonArray.getJSONObject(1).getJSONArray("ids");
+                        JSONArray time = jsonArray.getJSONObject(2).getJSONArray("time");
                         int length = ids.length();
                         IntegerCountMap map = new IntegerCountMap();
                         for (int i = 0; i < length; i++) {
@@ -129,7 +138,7 @@ public class VkApiHelper {
                         subscriber.onNext(map);
                         subscriber.onCompleted();
                     } catch (JSONException e) {
-                        subscriber.onError(new RuntimeException(e.toString()));
+                        subscriber.onError(e);
                     }
                 }
 
@@ -151,8 +160,12 @@ public class VkApiHelper {
             sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
-                    subscriber.onNext(Integer.parseInt(response.responseString));
-                    subscriber.onCompleted();
+                    try {
+                        subscriber.onNext(response.json.getInt("response"));
+                        subscriber.onCompleted();
+                    } catch (JSONException e) {
+                        subscriber.onError(e);
+                    }
                 }
 
                 @Override
