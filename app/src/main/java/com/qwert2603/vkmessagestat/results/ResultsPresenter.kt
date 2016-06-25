@@ -6,7 +6,9 @@ import com.qwert2603.vkmessagestat.base.BasePresenter
 import com.qwert2603.vkmessagestat.isInternetConnected
 import com.qwert2603.vkmessagestat.mock.Mocks
 import com.qwert2603.vkmessagestat.model.DataManager
+import com.qwert2603.vkmessagestat.model.QuantityInterval
 import com.qwert2603.vkmessagestat.model.Results
+import com.qwert2603.vkmessagestat.model.TimeInterval
 import com.qwert2603.vkmessagestat.util.LogUtils
 import javax.inject.Inject
 
@@ -38,6 +40,10 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
             return
         }
         if (model != null) {
+            when(model.intervalType) {
+                IntervalType.TIME -> view.showTitle(TimeInterval(model.value).toString(appContext))
+                IntervalType.QUANTITY -> view.showTitle(QuantityInterval(model.value).toString(appContext))
+            }
             if (model.done < model.total || model.total < 0) {
                 view.showLayer(Layer.CALCULATING)
                 view.showDone(model.done)

@@ -4,6 +4,7 @@ import com.qwert2603.vkmessagestat.base.BaseView
 import com.qwert2603.vkmessagestat.model.OneResult
 
 interface ResultsView : BaseView {
+    fun showTitle(title: String)
     fun showLayer(layer: Layer)
     fun showProgress(process: Int)
     fun showTotal(total: Int)

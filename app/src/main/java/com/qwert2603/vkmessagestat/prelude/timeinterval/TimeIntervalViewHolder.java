@@ -11,6 +11,8 @@ import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewAdapter;
 import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewHolder;
 import com.qwert2603.vkmessagestat.model.TimeInterval;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -51,8 +53,7 @@ public class TimeIntervalViewHolder
     }
 
     @Override
-    public void showTimeInterval(int hours) {
-        String string = itemView.getResources().getQuantityString(R.plurals.hours, hours, hours);
-        mIntervalTextView.setText(string);
+    public void showTimeInterval(@NotNull TimeInterval interval) {
+        mIntervalTextView.setText(interval.toString(itemView.getContext()));
     }
 }

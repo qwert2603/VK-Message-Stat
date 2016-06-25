@@ -17,7 +17,7 @@ public class QuantityIntervalPresenter extends BasePresenter<QuantityInterval, Q
         QuantityInterval interval = getModel();
         if (interval != null) {
             view.showIntervalImage(R.drawable.last);
-            view.showQuantityInterval(interval.getInterval());
+            view.showQuantityInterval(interval);
         }
     }
 }

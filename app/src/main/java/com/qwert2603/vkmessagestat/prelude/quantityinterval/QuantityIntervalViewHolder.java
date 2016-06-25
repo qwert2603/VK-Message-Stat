@@ -11,6 +11,8 @@ import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewAdapter;
 import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewHolder;
 import com.qwert2603.vkmessagestat.model.QuantityInterval;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -51,11 +53,7 @@ public class QuantityIntervalViewHolder
     }
 
     @Override
-    public void showQuantityInterval(int quantity) {
-        String string = itemView.getResources().getQuantityString(R.plurals.quantities, quantity, quantity);
-        if (quantity <= 0) {
-            string = string.replace("-1", itemView.getResources().getString(R.string.all));
-        }
-        mIntervalTextView.setText(string);
+    public void showQuantityInterval(@NotNull QuantityInterval interval) {
+        mIntervalTextView.setText(interval.toString(itemView.getContext()));
     }
 }

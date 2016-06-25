@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
-import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -98,16 +97,15 @@ public class VkApiHelper {
                 break;
         }
         final int finalMinTime = minTime;
-        LogUtils.d("finalMinTime == " + finalMinTime);
+        int count = intervalType == IntervalType.QUANTITY ? value : Integer.MAX_VALUE;
+        if (intervalType == IntervalType.QUANTITY && value == -1) {
+            count = Integer.MAX_VALUE;
+        }
+        final int finalCount = count;
         return getLastMessageId()
-                .flatMap(lastId -> getStarts(lastId, value))    //todo передавать правильное value для time-interval
-                .doOnNext(s -> LogUtils.d("start == " + s))
+                .flatMap(lastId -> getStarts(lastId, finalCount))
                 .flatMap(start -> getMessageStatistic(start, finalMinTime))
-                .doOnNext(m -> LogUtils.d("getMessageStatistic" + m.toString()))
-                .takeWhile(IntegerCountMap::notEmpty)
-                .doOnNext(m -> LogUtils.d("getMessageStatistic # takeWhile" + m.toString()))
-                .reduce(IntegerCountMap::addAll)
-                .doOnNext(map -> LogUtils.d("reduce == " + map));
+                .reduce(IntegerCountMap::addAll);
     }
 
     private Observable<Integer> getStarts(int lastId, int value) {

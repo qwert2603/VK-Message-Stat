@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.qwert2603.vkmessagestat.R
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.BaseFragment
+import com.qwert2603.vkmessagestat.base.SingleFragmentActivity
 import com.qwert2603.vkmessagestat.inflate
 import com.qwert2603.vkmessagestat.model.OneResult
 import com.qwert2603.vkmessagestat.showIfNotYet
@@ -55,6 +56,10 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
         results_recycler_view.adapter = resultsAdapter
 
         view_animator.getChildAt(Layer.LOADING_ERROR.ordinal).setOnClickListener { resultsPresenter.onReloadClicked() }
+    }
+
+    override fun showTitle(title: String) {
+        (activity as SingleFragmentActivity).setTitle(title)
     }
 
     override fun showLayer(layer: Layer) {

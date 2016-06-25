@@ -17,7 +17,7 @@ public class TimeIntervalPresenter extends BasePresenter<TimeInterval, TimeInter
         TimeInterval interval = getModel();
         if (interval != null) {
             view.showIntervalImage(R.drawable.hours);
-            view.showTimeInterval(interval.getInterval());
+            view.showTimeInterval(interval);
         }
     }
 }
