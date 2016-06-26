@@ -9,4 +9,8 @@ class MockDataManager : DataManager {
     override fun getMessageStatistic(intervalType: IntervalType, value: Int): Observable<Results> {
         throw UnsupportedOperationException()
     }
+
+    override fun logOut() {
+        throw UnsupportedOperationException()
+    }
 }

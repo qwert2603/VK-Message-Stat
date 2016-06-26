@@ -9,4 +9,5 @@ interface PreludeView : BaseView {
     fun showTimes(times: List<TimeInterval>)
     fun showQuantities(quantities: List<QuantityInterval>)
     fun moveToResults(intervalType: IntervalType, value: Int)
+    fun showLogOut()
 }

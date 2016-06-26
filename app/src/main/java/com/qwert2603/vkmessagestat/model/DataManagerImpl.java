@@ -42,6 +42,11 @@ public class DataManagerImpl implements DataManager {
                 .observeOn(mUIScheduler);
     }
 
+    @Override
+    public void logOut() {
+        mVkApiHelper.logOut();
+    }
+
     private Observable<List<OneResult>> getOneResults(IntegerCountMap map) {
         return mVkApiHelper.getUsersById(map.keysAsList())
                 .flatMap(Observable::from)

@@ -5,9 +5,7 @@ import android.app.Application;
 import com.qwert2603.vkmessagestat.di.AppComponent;
 import com.qwert2603.vkmessagestat.di.AppModule;
 import com.qwert2603.vkmessagestat.di.DaggerAppComponent;
-import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
-import com.vk.sdk.util.VKUtil;
 
 public class VkMessageStatApplication extends Application {
 
@@ -24,10 +22,10 @@ public class VkMessageStatApplication extends Application {
         sAppComponent = buildAppComponent();
 
         VKSdk.initialize(VkMessageStatApplication.this);
-        for (String s : VKUtil.getCertificateFingerprint(VkMessageStatApplication.this,
+        /*for (String s : VKUtil.getCertificateFingerprint(VkMessageStatApplication.this,
                 VkMessageStatApplication.this.getPackageName())) {
             LogUtils.d("CertificateFingerprint", "CertificateFingerprint == " + s);
-        }
+        }*/
     }
 
     protected AppComponent buildAppComponent() {

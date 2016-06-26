@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.qwert2603.vkmessagestat.R;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.base.BasePresenter;
+import com.qwert2603.vkmessagestat.model.DataManager;
 import com.qwert2603.vkmessagestat.model.QuantityInterval;
 import com.qwert2603.vkmessagestat.model.TimeInterval;
 import com.qwert2603.vkmessagestat.results.IntervalType;
@@ -19,6 +20,9 @@ public class PreludePresenter extends BasePresenter<Object, PreludeView> {
 
     @Inject
     Context mAppContext;
+
+    @Inject
+    DataManager mDataManager;
 
     private List<TimeInterval> mTimeIntervals;
     private List<QuantityInterval> mQuantityIntervals;
@@ -50,5 +54,10 @@ public class PreludePresenter extends BasePresenter<Object, PreludeView> {
 
     public void onQuantitySelected(int position) {
         getView().moveToResults(IntervalType.QUANTITY, mQuantityIntervals.get(position).getInterval());
+    }
+
+    public void onLogOutClicked() {
+        mDataManager.logOut();
+        getView().showLogOut();
     }
 }

@@ -7,12 +7,16 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.qwert2603.vkmessagestat.R;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.base.BaseFragment;
+import com.qwert2603.vkmessagestat.login.MainActivity;
 import com.qwert2603.vkmessagestat.model.QuantityInterval;
 import com.qwert2603.vkmessagestat.model.TimeInterval;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdapter;
@@ -61,6 +65,7 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
     public void onCreate(Bundle savedInstanceState) {
         VkMessageStatApplication.getAppComponent().inject(PreludeFragment.this);
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -81,6 +86,20 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.prelude, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.log_out) {
+            mPreludePresenter.onLogOutClicked();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void showTimes(@NonNull List<TimeInterval> times) {
         mTimeIntervalAdapter.setModelList(times);
     }
@@ -96,5 +115,12 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
         intent.putExtra(ResultsFragment.INTERVAL_TYPE_ORDINAL_KEY, intervalType.ordinal());
         intent.putExtra(ResultsFragment.INTERVAL_VALUE_KEY, value);
         startActivity(intent);
+    }
+
+    @Override
+    public void showLogOut() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 }

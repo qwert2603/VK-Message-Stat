@@ -7,4 +7,5 @@
     <string name="of">of</string>
     <string name="loading_error">Loading error!\nClick to try again.</string>
     <string name="no_internet">No internet!</string>
+    <string name="log_out">Log out</string>
 </resources>

@@ -5,4 +5,5 @@ import rx.Observable
 
 interface DataManager {
     fun getMessageStatistic(intervalType: IntervalType, value: Int): Observable<Results>
+    fun logOut()
 }
