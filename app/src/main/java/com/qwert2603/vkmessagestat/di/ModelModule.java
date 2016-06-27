@@ -1,7 +1,7 @@
 package com.qwert2603.vkmessagestat.di;
 
 import com.qwert2603.vkmessagestat.Const;
-import com.qwert2603.vkmessagestat.hepler.VkApiHelper;
+import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;

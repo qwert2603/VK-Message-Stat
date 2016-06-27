@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
-import com.qwert2603.vkmessagestat.hepler.VkApiHelper;
+import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
 import com.qwert2603.vkmessagestat.results.IntervalType;
 
 import java.util.List;

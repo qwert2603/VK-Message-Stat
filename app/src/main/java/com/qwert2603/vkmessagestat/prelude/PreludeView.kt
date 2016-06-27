@@ -10,4 +10,5 @@ interface PreludeView : BaseView {
     fun showQuantities(quantities: List<QuantityInterval>)
     fun moveToResults(intervalType: IntervalType, value: Int)
     fun showLogOut()
+    fun showNotReadyYet()   //todo: remove
 }

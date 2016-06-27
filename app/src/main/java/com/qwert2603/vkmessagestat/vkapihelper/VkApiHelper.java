@@ -1,10 +1,10 @@
-package com.qwert2603.vkmessagestat.hepler;
+package com.qwert2603.vkmessagestat.vkapihelper;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.v4.util.Pair;
 
-import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
 import com.vk.sdk.VKSdk;
@@ -20,6 +20,7 @@ import com.vk.sdk.api.model.VKUsersArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -82,58 +83,70 @@ public class VkApiHelper {
 
     private static final int USERS_PER_REQUEST = 1000;
     private static final int FRIENDS_PER_REQUEST = 5000;
-    private static final int MESSAGES_PER_REQUEST = 100;
+    private static final int MESSAGES_PER_ARG = 100;
+    private static final int ARGS_PER_REQUEST = 25;
+    private static final int MESSAGES_PER_REQUEST = MESSAGES_PER_ARG * ARGS_PER_REQUEST;
 
     public Observable<IntegerCountMap> getMessageStatistic(IntervalType intervalType, int value) {
-        int minTime = Integer.MAX_VALUE;
-        switch (intervalType) {
-            case QUANTITY:
-                minTime = Integer.MIN_VALUE;
-                break;
-            case TIME:
-                minTime = value != -1
-                        ? ((int) (System.currentTimeMillis() / 1000) - value * Const.SECONDS_PER_HOUR)
-                        : Integer.MIN_VALUE;
-                break;
+        if (intervalType == IntervalType.QUANTITY) {
+            return getLastMessageIdAndTime()
+                    .flatMap(q -> getStartsInfo(q.getLastMessageId(), value != -1 ? value : q.getLastMessageId()))
+                    .flatMap(startInfo -> doGetMessageStatistic(startInfo, 0))
+                    .map(pair -> pair.first)
+                    .reduce(IntegerCountMap::addAll);
         }
-        final int finalMinTime = minTime;
-        int count = intervalType == IntervalType.QUANTITY ? value : Integer.MAX_VALUE;
-        if (intervalType == IntervalType.QUANTITY && value == -1) {
-            count = Integer.MAX_VALUE;
-        }
-        final int finalCount = count;
-        return getLastMessageId()
-                .flatMap(lastId -> getStarts(lastId, finalCount))
-                .flatMap(start -> getMessageStatistic(start, finalMinTime))
-                .reduce(IntegerCountMap::addAll);
+
+        return null;
+
+        /*return getLastMessageIdAndTime()
+                .map(q -> {
+                    int minTime = q.getTime() - value * Const.SECONDS_PER_HOUR;
+                    return new Pair<>(q.getLastMessageId(), minTime);
+                })
+                .flatMap(pair -> getStarts(2000, 2000))
+                .flatMap(start -> doGetMessageStatistic(start, 1, 2000))
+                .doOnNext(p -> LogUtils.d("p.second == " + p.second))
+                .takeWhile(pair -> pair.second >= 2000)
+                .map(pair -> pair.first)
+                .reduce(IntegerCountMap::addAll);*/
     }
 
-    private Observable<Integer> getStarts(int lastId, int value) {
-        return Observable.range(0, (value - 1) / MESSAGES_PER_REQUEST + 1)
-                .map(i -> lastId - i * MESSAGES_PER_REQUEST);
+    private Observable<StartInfo> getStartsInfo(int lastId, int value) {
+        int requestsCount = (value - 1) / MESSAGES_PER_REQUEST + 1;
+        return Observable.range(0, requestsCount)
+                .map(i -> new StartInfo(
+                        lastId - i * MESSAGES_PER_REQUEST,
+                        Math.min(ARGS_PER_REQUEST, (value - i * MESSAGES_PER_REQUEST) / MESSAGES_PER_ARG)
+                ));
     }
 
-    private Observable<IntegerCountMap> getMessageStatistic(int start, int minTime) {
+    private Observable<Pair<IntegerCountMap, Integer>> doGetMessageStatistic(StartInfo startInfo, int minTime) {
         return Observable.create(subscriber -> {
-            VKParameters parameters = VKParameters.from("start", start);
-            VKRequest vkRequest = new VKRequest("execute.getStat", parameters);
+            VKRequest vkRequest = new VKRequest("execute.getStat", createVkParams(startInfo));
             vkRequest.setUseLooperForCallListener(false);
             sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     try {
                         JSONArray jsonArray = response.json.getJSONArray("response");
-                        JSONArray ids = jsonArray.getJSONObject(1).getJSONArray("ids");
-                        JSONArray time = jsonArray.getJSONObject(2).getJSONArray("time");
-                        int length = ids.length();
-                        IntegerCountMap map = new IntegerCountMap();
-                        for (int i = 0; i < length; i++) {
-                            if (time.getInt(i) < minTime) {
-                                break;
+                        int length1 = jsonArray.length();
+                        for (int j = 0; j < length1; j++) {
+                            JSONArray jsonArray1 = jsonArray.getJSONArray(j);
+                            JSONArray ids = jsonArray1.getJSONObject(0).getJSONArray("ids");
+                            JSONArray time = jsonArray1.getJSONObject(1).getJSONArray("time");
+                            int length = ids.length();
+                            if (length > 0) {
+                                IntegerCountMap map = new IntegerCountMap();
+                                for (int i = 0; i < length; i++) {
+                                    if (time.getInt(i) < minTime) {
+                                        break;
+                                    }
+                                    map.add(ids.getInt(i), 1);
+                                }
+                                int lastTime = time.getInt(0);
+                                subscriber.onNext(new Pair<>(map, lastTime));
                             }
-                            map.add(ids.getInt(i), 1);
                         }
-                        subscriber.onNext(map);
                         subscriber.onCompleted();
                     } catch (JSONException e) {
                         subscriber.onError(e);
@@ -148,18 +161,40 @@ public class VkApiHelper {
         });
     }
 
-    /**
-     * @return id последнего сообщения ВК.
-     */
-    private Observable<Integer> getLastMessageId() {
+    private VKParameters createVkParams(StartInfo startInfo) {
+        Object[] args = new Object[ARGS_PER_REQUEST * 2];
+        for (int i = 0; i < ARGS_PER_REQUEST; i++) {
+            args[i * 2] = "ids" + (i + 1);
+            if (i < startInfo.getArgsCount()) {
+                args[i * 2 + 1] = getIdsString(startInfo.getStart() - i * MESSAGES_PER_ARG, MESSAGES_PER_ARG);
+            } else {
+                args[i * 2 + 1] = "";
+            }
+        }
+        return VKParameters.from(args);
+    }
+
+    private String getIdsString(int start, int count) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            stringBuilder.append(start).append(",");
+            --start;
+        }
+        return stringBuilder.toString();
+    }
+
+    private Observable<LastMessageIdAndTime> getLastMessageIdAndTime() {
         return Observable.create(subscriber -> {
-            VKRequest vkRequest = new VKRequest("execute.lastId");
+            VKRequest vkRequest = new VKRequest("execute.lastIdAndTime");
             vkRequest.setUseLooperForCallListener(false);
             sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     try {
-                        subscriber.onNext(response.json.getInt("response"));
+                        JSONObject jsonObject = response.json.getJSONObject("response");
+                        int lastId = jsonObject.getInt("lastId");
+                        int time = jsonObject.getInt("time");
+                        subscriber.onNext(new LastMessageIdAndTime(lastId, time));
                         subscriber.onCompleted();
                     } catch (JSONException e) {
                         subscriber.onError(e);

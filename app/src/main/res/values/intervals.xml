@@ -11,6 +11,7 @@
         <item>24</item>
         <item>48</item>
         <item>168</item>
+        <item>720</item>
     </integer-array>
 
     <integer-array name="quantity_intervals">
@@ -20,7 +21,7 @@
         <item>1000</item>
         <item>2000</item>
         <item>5000</item>
-        <item>10000</item>
+        <item>12000</item>
         <item>50000</item>
         <item>100000</item>
         <item>-1</item> <!-- for all messages -->

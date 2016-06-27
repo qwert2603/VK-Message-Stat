@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.qwert2603.vkmessagestat.R;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
@@ -122,5 +123,10 @@ public class PreludeFragment extends BaseFragment<PreludePresenter> implements P
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void showNotReadyYet() {
+        Toast.makeText(getActivity(), "Not ready yet!", Toast.LENGTH_SHORT).show();
     }
 }
