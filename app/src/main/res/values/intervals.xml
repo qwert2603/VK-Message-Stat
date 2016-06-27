@@ -19,9 +19,10 @@
         <item>200</item>
         <item>500</item>
         <item>1000</item>
+        <item>1918</item>
         <item>2000</item>
         <item>5000</item>
-        <item>12000</item>
+        <item>10000</item>
         <item>50000</item>
         <item>100000</item>
         <item>-1</item> <!-- for all messages -->

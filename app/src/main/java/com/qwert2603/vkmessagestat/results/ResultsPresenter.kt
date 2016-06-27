@@ -50,8 +50,12 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
                 view.showTotal(model.total)
                 view.showProgress(model.done * 100 / model.total)
             } else {
-                view.showLayer(Layer.RESULTS)
-                view.showResultList(model.resultsList)
+                if (! model.resultsList.isEmpty()) {
+                    view.showLayer(Layer.RESULTS)
+                    view.showResultList(model.resultsList)
+                } else {
+                    view.showLayer(Layer.NO_MESSAGES)
+                }
             }
         }
     }

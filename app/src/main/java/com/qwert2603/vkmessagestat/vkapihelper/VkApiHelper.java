@@ -3,8 +3,8 @@ package com.qwert2603.vkmessagestat.vkapihelper;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.support.v4.util.Pair;
 
+import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
 import com.vk.sdk.VKSdk;
@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
@@ -90,28 +91,23 @@ public class VkApiHelper {
     public Observable<IntegerCountMap> getMessageStatistic(IntervalType intervalType, int value) {
         if (intervalType == IntervalType.QUANTITY) {
             return getLastMessageIdAndTime()
-                    .flatMap(q -> getStartsInfo(q.getLastMessageId(), value != -1 ? value : q.getLastMessageId()))
+                    .flatMap(q -> getStartsInfos(q.getLastMessageId(), value != -1 ? value : q.getLastMessageId()))
                     .flatMap(startInfo -> doGetMessageStatistic(startInfo, 0))
-                    .map(pair -> pair.first)
+                    .map(Stats::getStatsMap)
                     .reduce(IntegerCountMap::addAll);
         }
 
-        return null;
-
-        /*return getLastMessageIdAndTime()
-                .map(q -> {
-                    int minTime = q.getTime() - value * Const.SECONDS_PER_HOUR;
-                    return new Pair<>(q.getLastMessageId(), minTime);
-                })
-                .flatMap(pair -> getStarts(2000, 2000))
-                .flatMap(start -> doGetMessageStatistic(start, 1, 2000))
-                .doOnNext(p -> LogUtils.d("p.second == " + p.second))
-                .takeWhile(pair -> pair.second >= 2000)
-                .map(pair -> pair.first)
-                .reduce(IntegerCountMap::addAll);*/
+        return getLastMessageIdAndTime()
+                .flatMap(q -> getStartsInfos(q.getLastMessageId(), q.getLastMessageId())
+                        .zipWith(Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS), (s, l) -> s)
+                        .flatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
+                        .startWith(new Stats(new IntegerCountMap(), false))
+                        .takeWhile(stats -> !stats.getFirstLessThanMinTime()))
+                .map(Stats::getStatsMap)
+                .reduce(IntegerCountMap::addAll);
     }
 
-    private Observable<StartInfo> getStartsInfo(int lastId, int value) {
+    private Observable<StartInfo> getStartsInfos(int lastId, int value) {
         int requestsCount = (value - 1) / MESSAGES_PER_REQUEST + 1;
         return Observable.range(0, requestsCount)
                 .map(i -> new StartInfo(
@@ -120,7 +116,7 @@ public class VkApiHelper {
                 ));
     }
 
-    private Observable<Pair<IntegerCountMap, Integer>> doGetMessageStatistic(StartInfo startInfo, int minTime) {
+    private Observable<Stats> doGetMessageStatistic(StartInfo startInfo, int minTime) {
         return Observable.create(subscriber -> {
             VKRequest vkRequest = new VKRequest("execute.getStat", createVkParams(startInfo));
             vkRequest.setUseLooperForCallListener(false);
@@ -143,8 +139,7 @@ public class VkApiHelper {
                                     }
                                     map.add(ids.getInt(i), 1);
                                 }
-                                int lastTime = time.getInt(0);
-                                subscriber.onNext(new Pair<>(map, lastTime));
+                                subscriber.onNext(new Stats(map, time.getInt(0) < minTime));
                             }
                         }
                         subscriber.onCompleted();

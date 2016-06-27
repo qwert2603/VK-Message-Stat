@@ -49,8 +49,7 @@ public class PreludePresenter extends BasePresenter<Object, PreludeView> {
     }
 
     public void onTimeSelected(int position) {
-        //getView().moveToResults(IntervalType.TIME, mTimeIntervals.get(position).getInterval());
-        getView().showNotReadyYet();
+        getView().moveToResults(IntervalType.TIME, mTimeIntervals.get(position).getInterval());
     }
 
     public void onQuantitySelected(int position) {
