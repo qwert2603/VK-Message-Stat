@@ -9,7 +9,7 @@ data class Results(
         var total: Int,
         val resultsList: List<OneResult>
 ) {
-    fun progress() = if (total == 0) 0 else done * 100 / total
+    fun progress() = if (total == 0) 0 else (done * 100 / total)
 
     fun interval(): Interval {
         when (intervalType) {

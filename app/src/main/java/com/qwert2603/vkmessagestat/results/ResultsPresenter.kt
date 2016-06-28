@@ -61,9 +61,8 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
         error = !appContext.isInternetConnected()
         updateView()
         if (!error) {
-            if (model != null) {
-                loadStatistic()
-            }
+            loadStatistic()
+            updateView()
         } else {
             view.showNoInternet()
         }
