@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VK Message Stat</string>
+    <string name="app_name">VK Message Stats</string>
     <string name="login_failed">Login failed!</string>
     <string name="choose_interval_for_statistic">Choose interval for statistic:</string>
     <string name="all">All</string>
