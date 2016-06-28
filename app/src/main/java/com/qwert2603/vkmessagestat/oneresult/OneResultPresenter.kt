@@ -4,7 +4,7 @@ import com.qwert2603.vkmessagestat.base.BasePresenter
 import com.qwert2603.vkmessagestat.getPhoto
 import com.qwert2603.vkmessagestat.model.OneResult
 
-class OneResultPresenter : BasePresenter<OneResult, OneResultView>() {
+open class OneResultPresenter : BasePresenter<OneResult, OneResultView>() {
 
     fun setOneResult(oneResult: OneResult) {
         model = oneResult

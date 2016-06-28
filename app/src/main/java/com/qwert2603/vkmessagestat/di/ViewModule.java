@@ -1,5 +1,6 @@
 package com.qwert2603.vkmessagestat.di;
 
+import com.qwert2603.vkmessagestat.oneresult.OneResultPresenter;
 import com.qwert2603.vkmessagestat.prelude.PreludePresenter;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalAdapter;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalPresenter;
@@ -47,6 +48,11 @@ public class ViewModule {
     @Provides
     ResultsAdapter mResultsAdapter() {
         return new ResultsAdapter();
+    }
+
+    @Provides
+    OneResultPresenter mOneResultPresenter() {
+        return new OneResultPresenter();
     }
 
 }

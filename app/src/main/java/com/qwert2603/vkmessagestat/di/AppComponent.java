@@ -1,6 +1,7 @@
 package com.qwert2603.vkmessagestat.di;
 
 import com.qwert2603.vkmessagestat.model.DataManagerImpl;
+import com.qwert2603.vkmessagestat.oneresult.OneResultViewHolder;
 import com.qwert2603.vkmessagestat.prelude.PreludeFragment;
 import com.qwert2603.vkmessagestat.prelude.PreludePresenter;
 import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalViewHolder;
@@ -34,4 +35,6 @@ public interface AppComponent {
     void inject(ResultsPresenter resultsPresenter);
 
     void inject(DataManagerImpl dataManagerImpl);
+
+    void inject(OneResultViewHolder oneResultViewHolder);
 }
