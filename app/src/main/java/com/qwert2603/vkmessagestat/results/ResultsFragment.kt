@@ -70,8 +70,8 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
         progress_bar.progress = process
     }
 
-    override fun showTotal(total: Int) {
-        total_text_view.text = total.toString()
+    override fun showTotal(total: String) {
+        total_text_view.text = total
     }
 
     override fun showDone(done: Int) {

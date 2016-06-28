@@ -6,21 +6,21 @@ import com.qwert2603.vkmessagestat.base.BasePresenter
 import com.qwert2603.vkmessagestat.isInternetConnected
 import com.qwert2603.vkmessagestat.mock.Mocks
 import com.qwert2603.vkmessagestat.model.DataManager
-import com.qwert2603.vkmessagestat.model.QuantityInterval
 import com.qwert2603.vkmessagestat.model.Results
-import com.qwert2603.vkmessagestat.model.TimeInterval
 import com.qwert2603.vkmessagestat.util.LogUtils
 import javax.inject.Inject
 
 class ResultsPresenter : BasePresenter<Results, ResultsView>() {
 
     @Inject @JvmField
-    var appContext : Context = Mocks.MOCK_CONTEXT
+    var appContext: Context = Mocks.MOCK_CONTEXT
 
     @Inject @JvmField
-    var dataManager : DataManager = Mocks.MOCK_DATA_MANAGER
+    var dataManager: DataManager = Mocks.MOCK_DATA_MANAGER
 
     var error = false
+
+    var calculating = false
 
     override fun bindView(view: ResultsView?) {
         super.bindView(view)
@@ -30,7 +30,7 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     }
 
     fun setInterval(intervalType: IntervalType, value: Int) {
-        model = Results(intervalType, value, -1, -1, emptyList())
+        model = Results(intervalType, value, 0, 0, emptyList())
         loadStatistic()
     }
 
@@ -40,17 +40,14 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
             return
         }
         if (model != null) {
-            when(model.intervalType) {
-                IntervalType.TIME -> view.showTitle(TimeInterval(model.value).toString(appContext))
-                IntervalType.QUANTITY -> view.showTitle(QuantityInterval(model.value).toString(appContext))
-            }
-            if (model.done < model.total || model.total < 0) {
+            view.showTitle(model.interval().toString(appContext))
+            if (calculating) {
                 view.showLayer(Layer.CALCULATING)
                 view.showDone(model.done)
-                view.showTotal(model.total)
-                view.showProgress(model.done * 100 / model.total)
+                view.showTotal(model.interval().toString(appContext))
+                view.showProgress(model.progress())
             } else {
-                if (! model.resultsList.isEmpty()) {
+                if (!model.resultsList.isEmpty()) {
                     view.showLayer(Layer.RESULTS)
                     view.showResultList(model.resultsList)
                 } else {
@@ -73,15 +70,34 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     }
 
     fun loadStatistic() {
-        val subscription = dataManager.getMessageStatistic(model.intervalType, model.value)
+        calculating = true
+        val stats = dataManager.getMessageStatistic(model.intervalType, model.value)
+        val subscription1 = stats.first
                 .subscribe (
-                        { results -> model = results },
+                        {
+                            calculating = false
+                            model = it
+                        },
                         { ex ->
                             error = true
+                            calculating = false
                             updateView()
                             LogUtils.e(ex)
                         }
                 )
-        mCompositeSubscription.add(subscription)
+        mCompositeSubscription.add(subscription1)
+
+        val subscription2 = stats.second
+                .subscribe(
+                        {
+                            if (model != null) {
+                                model.done = it.done
+                                model.total = it.total
+                                updateView()
+                            }
+                        },
+                        { LogUtils.e(it) }
+                )
+        mCompositeSubscription.add(subscription2)
     }
 }

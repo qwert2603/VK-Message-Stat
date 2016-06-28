@@ -7,7 +7,7 @@ interface ResultsView : BaseView {
     fun showTitle(title: String)
     fun showLayer(layer: Layer)
     fun showProgress(process: Int)
-    fun showTotal(total: Int)
+    fun showTotal(total: String)
     fun showDone(done: Int)
     fun showResultList(oneResults: List<OneResult>)
     fun showNoInternet()

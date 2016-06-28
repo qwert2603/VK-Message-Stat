@@ -1,11 +1,13 @@
 package com.qwert2603.vkmessagestat.model;
 
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
-import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
 import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.vkapihelper.Progress;
+import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
 
 import java.util.List;
 
@@ -34,12 +36,22 @@ public class DataManagerImpl implements DataManager {
 
     @NonNull
     @Override
-    public Observable<Results> getMessageStatistic(@NonNull IntervalType intervalType, int value) {
-        Observable<IntegerCountMap> stats = mVkApiHelper.getMessageStatistic(intervalType, value).cache();
-        return Observable.zip(stats, stats.flatMap(this::getOneResults),
-                (map, listObservable) -> new Results(intervalType, value, map.getTotalSum(), map.getTotalSum(), listObservable))
-                .subscribeOn(mIOScheduler)
-                .observeOn(mUIScheduler);
+    public Pair<Observable<Results>, Observable<Progress>> getMessageStatistic(@NonNull IntervalType intervalType, int value) {
+        Pair<Observable<IntegerCountMap>, Observable<Progress>> messageStatistic =
+                mVkApiHelper.getMessageStatistic(intervalType, value);
+        Observable<IntegerCountMap> stats = messageStatistic.first.cache();
+        return new Pair<>(
+                Observable.zip(stats, stats.flatMap(this::getOneResults),
+                        (map, listObservable) ->
+                                new Results(intervalType, value, map.getTotalSum(), map.getTotalSum(), listObservable))
+                        .onBackpressureBuffer()
+                        .subscribeOn(mIOScheduler)
+                        .observeOn(mUIScheduler),
+                messageStatistic.second
+                        .onBackpressureBuffer()
+                        .subscribeOn(mIOScheduler)
+                        .observeOn(mUIScheduler)
+        );
     }
 
     @Override

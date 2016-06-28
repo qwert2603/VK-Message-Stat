@@ -25,46 +25,51 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="22sp"/>
 
-            <TextView
-                android:visibility="invisible"
-                android:id="@+id/done_text_view"
+            <LinearLayout
+                android:id="@+id/progress_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title_text_view"
-                android:layout_marginStart="16dp"
-                android:text="X"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="28sp"/>
+                android:orientation="horizontal"
+                android:layout_below="@+id/title_text_view">
 
-            <TextView
-                android:visibility="invisible"
-                android:id="@+id/of_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/done_text_view"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/done_text_view"
-                android:text="@string/of"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"/>
+                <TextView
+                    android:id="@+id/done_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:singleLine="true"
+                    android:text="10000000000"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="28sp"/>
 
-            <TextView
-                android:visibility="invisible"
-                android:id="@+id/total_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title_text_view"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@+id/of_text_view"
-                android:text="X"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="28sp"/>
+                <TextView
+                    android:id="@+id/of_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:singleLine="true"
+                    android:text="@string/of"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"/>
+
+                <TextView
+                    android:id="@+id/total_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:singleLine="true"
+                    android:text="10000000000000"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="28sp"/>
+
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/done_text_view"
+                android:layout_below="@+id/progress_layout"
                 android:max="100"
                 android:progress="26"/>
 
@@ -81,18 +86,18 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
+            android:text="@string/no_messages"
             android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:text="@string/no_messages"/>
+            android:textSize="24sp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
+            android:text="@string/loading_error"
             android:textColor="@color/colorAccent"
-            android:textSize="24sp"
-            android:text="@string/loading_error"/>
+            android:textSize="24sp"/>
 
     </ViewAnimator>
 

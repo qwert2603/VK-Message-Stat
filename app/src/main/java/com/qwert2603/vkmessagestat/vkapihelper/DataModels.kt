@@ -14,5 +14,10 @@ data class StartInfo(
 
 data class Stats(
         val statsMap: IntegerCountMap,
-        val firstLessThanMinTime: Boolean
+        val time: Int   // время самого позднего сообщения.
+)
+
+data class Progress(
+        val done: Int,
+        val total: Int
 )
