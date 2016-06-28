@@ -73,8 +73,8 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
     public void onBindViewHolder(VH holder, int position) {
         M model = mModelList.get(position);
         // назначаем модель viewHolder'у элемента.
-        holder.setModel(model);
         holder.bindPresenter();
+        holder.setModel(model);
         // отображаем выделен элемент или нет.
         mRecyclerViewSelector.showWhetherItemSelected(holder.itemView, position);
         mVHMap.put(model.getId(), holder);

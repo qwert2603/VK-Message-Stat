@@ -40,9 +40,9 @@ public abstract class BaseRecyclerViewHolder<M extends Identifiable, P extends B
     /**
      * Назначить модель для этого элемента.
      *
-     * @param oneResult объект модели.
+     * @param model объект модели.
      */
-    public abstract void setModel(M oneResult);
+    public abstract void setModel(M model);
 
     /**
      * Привязать презентер, предназначенный для этого ViewHolder'a.
