@@ -8,6 +8,7 @@ import android.support.v4.util.Pair;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -98,6 +99,7 @@ public class VkApiHelper {
         if (intervalType == IntervalType.QUANTITY) {
             int[] i = {0, value};
             observable = getLastMessageIdAndTime()
+                    .first()
                     .doOnNext(q -> {
                         if (value == -1) {
                             i[1] = q.getLastMessageId();

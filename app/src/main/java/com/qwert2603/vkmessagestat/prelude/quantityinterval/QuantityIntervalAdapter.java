@@ -8,8 +8,7 @@ import com.qwert2603.vkmessagestat.R;
 import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewAdapter;
 import com.qwert2603.vkmessagestat.model.QuantityInterval;
 
-public class QuantityIntervalAdapter
-        extends BaseRecyclerViewAdapter<QuantityInterval, QuantityIntervalViewHolder> {
+public class QuantityIntervalAdapter extends BaseRecyclerViewAdapter<QuantityInterval, QuantityIntervalViewHolder> {
 
     public QuantityIntervalAdapter() {
     }
