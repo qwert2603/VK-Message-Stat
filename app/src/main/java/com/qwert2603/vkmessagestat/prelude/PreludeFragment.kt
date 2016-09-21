@@ -50,6 +50,8 @@ class PreludeFragment :  BaseFragment<PreludePresenter>(), PreludeView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //todo при окончании скроллинга по горизонатали показывать скроллившуюся полосу полностью, если раньше было не полностью.
+
         time_interval_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         time_interval_recycler_view.adapter = mTimeIntervalAdapter
         mTimeIntervalAdapter.clickCallbacks = object : ClickCallbacks {
