@@ -1,4 +1,4 @@
-package com.qwert2603.vkmessagestat.prelude;
+package com.qwert2603.vkmessagestat.prelude
 
 import android.content.Intent
 import android.os.Bundle
@@ -96,9 +96,9 @@ class PreludeFragment :  BaseFragment<PreludePresenter>(), PreludeView {
     }
 
     override fun showLogOut() {
-        val intent = Intent(activity, MainActivity::class.java);
-        startActivity(intent);
-        activity.finish();
+        val intent = Intent(activity, MainActivity::class.java)
+        startActivity(intent)
+        activity.finish()
     }
 
 }

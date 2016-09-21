@@ -1,14 +1,11 @@
 package com.qwert2603.vkmessagestat.base.recyclerview;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.qwert2603.vkmessagestat.model.Identifiable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Базовый адаптер для {@link RecyclerView} для шаблона MVP.
@@ -26,12 +23,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
     private ClickCallbacks mClickCallbacks;
     private LongClickCallbacks mLongClickCallbacks;
     private RecyclerViewSelector mRecyclerViewSelector = new RecyclerViewSelector(BaseRecyclerViewAdapter.this);
-
-    /**
-     * Карта id модели -- ее ViewHolder.
-     * Если нет, то null.
-     */
-    private Map<Integer, VH> mVHMap = new HashMap<>();
 
     public BaseRecyclerViewAdapter() {
     }
@@ -63,11 +54,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
         mRecyclerViewSelector.setSelectedPosition(position);
     }
 
-    @Nullable
-    public VH getViewHolderForModel(int modelId) {
-        return mVHMap.get(modelId);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(VH holder, int position) {
@@ -77,7 +63,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
         holder.setModel(model);
         // отображаем выделен элемент или нет.
         mRecyclerViewSelector.showWhetherItemSelected(holder.itemView, position);
-        mVHMap.put(model.getId(), holder);
     }
 
     @Override
