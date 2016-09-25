@@ -1,6 +1,5 @@
 package com.qwert2603.vkmessagestat.prelude.quantityinterval
 
-
 import android.support.annotation.DrawableRes
 import android.view.View
 import com.qwert2603.vkmessagestat.VkMessageStatApplication

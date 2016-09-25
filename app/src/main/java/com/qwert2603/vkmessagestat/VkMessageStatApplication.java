@@ -22,6 +22,9 @@ public class VkMessageStatApplication extends Application {
         sAppComponent = buildAppComponent();
 
         VKSdk.initialize(VkMessageStatApplication.this);
+
+        //LogUtils.d(VKAccessToken.currentToken().accessToken);
+
         /*for (String s : VKUtil.getCertificateFingerprint(VkMessageStatApplication.this,
                 VkMessageStatApplication.this.getPackageName())) {
             LogUtils.d("CertificateFingerprint", "CertificateFingerprint == " + s);

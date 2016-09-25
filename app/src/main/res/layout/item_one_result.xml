@@ -15,10 +15,12 @@
 
     <TextView
         android:id="@+id/name_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Alex Zhdanov"
+        android:singleLine="true"
+        android:text="Alex Zhdanov Zhdanov Zhdanov"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
 

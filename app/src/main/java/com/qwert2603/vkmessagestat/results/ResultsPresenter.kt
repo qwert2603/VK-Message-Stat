@@ -18,9 +18,9 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     @Inject @JvmField
     var dataManager: DataManager = Mocks.MOCK_DATA_MANAGER
 
-    var error = false
+    private var error = false
 
-    var calculating = false
+    private var calculating = false
 
     override fun bindView(view: ResultsView?) {
         super.bindView(view)
@@ -72,7 +72,7 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
         calculating = true
         val stats = dataManager.getMessageStatistic(model.intervalType, model.value)
         val subscription1 = stats.first
-                .subscribe (
+                .subscribe(
                         {
                             calculating = false
                             model = it

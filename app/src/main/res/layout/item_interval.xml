@@ -13,7 +13,8 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@drawable/hours"
-        android:layout_gravity="center_horizontal|top"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"/>
 
     <TextView
         android:id="@+id/interval_text_view"

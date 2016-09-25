@@ -97,23 +97,24 @@ public class VkApiHelper {
         Observable<IntegerCountMap> observable;
 
         if (intervalType == IntervalType.QUANTITY) {
-            int[] i = {0, value};
+            int[] progress = {0, value};
             observable = getLastMessageIdAndTime()
                     .first()
                     .doOnNext(q -> {
                         if (value == -1) {
-                            i[1] = q.getLastMessageId();
+                            progress[1] = q.getLastMessageId();
                         }
                     })
                     .flatMap(q -> getStartsInfos(q.getLastMessageId(), value != -1 ? value : q.getLastMessageId()))
                     .flatMap(startInfo -> doGetMessageStatistic(startInfo, 0))
+                    .serialize()
                     .map(Stats::getStatsMap)
                     .doOnNext(map -> {
-                        i[0] += MESSAGES_PER_ARG;
-                        if (i[0] > i[1]) {
-                            i[0] = i[1];
+                        progress[0] += MESSAGES_PER_ARG;
+                        if (progress[0] > progress[1]) {
+                            progress[0] = progress[1];
                         }
-                        subject.onNext(new Progress(i[0], i[1]));
+                        subject.onNext(new Progress(progress[0], progress[1]));
                     })
                     .reduce(IntegerCountMap::addAll);
         } else {
@@ -121,8 +122,10 @@ public class VkApiHelper {
                     .flatMap(q -> getStartsInfos(q.getLastMessageId(), q.getLastMessageId())
                             .zipWith(Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS), (s, l) -> s)
                             .flatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
-                            .startWith(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
+                            .serialize()
                             .takeWhile(stats -> stats.getTime() > (q.getTime() - value * Const.SECONDS_PER_HOUR))
+                            .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
+                            .doOnNext(stats -> LogUtils.d(stats.toString()))
                             .doOnNext(stats -> {
                                 int hoursDone = (q.getTime() - stats.getTime()) / Const.SECONDS_PER_HOUR;
                                 if (hoursDone < 0) {
