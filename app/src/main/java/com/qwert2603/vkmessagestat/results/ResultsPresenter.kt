@@ -15,7 +15,7 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     @Inject @JvmField
     var appContext: Context = Mocks.MOCK_CONTEXT
 
-    @Inject @JvmField
+    @Inject @JvmField //todo: use lateinit
     var dataManager: DataManager = Mocks.MOCK_DATA_MANAGER
 
     private var error = false

@@ -9,7 +9,8 @@ data class LastMessageIdAndTime(
 
 data class StartInfo(
         val start: Int, // id сообщения, с котоорго начинается статистика.
-        val argsCount: Int   // кол-во аргументов в запросе (сотен сообщений для статистики).
+        val argsCount: Int, // кол-во аргументов в запросе (сотен сообщений для статистики).
+        val messagesPerLastArg: Int // кол-во сообщений в последнем агрументе.
 )
 
 data class Stats(

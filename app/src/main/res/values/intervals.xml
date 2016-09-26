@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer-array name="time_intervals">
+        <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -12,16 +13,23 @@
         <item>48</item>
         <item>168</item>
         <item>720</item>
+        <!--<item>8766</item>-->
     </integer-array>
 
     <integer-array name="quantity_intervals">
+        <item>0</item>
+        <item>1</item>
+        <item>42</item>
         <item>100</item>
         <item>200</item>
         <item>500</item>
+        <item>865</item>
         <item>1000</item>
         <item>1918</item>
         <item>2000</item>
         <item>5000</item>
+        <item>6700</item>
+        <item>7852</item>
         <item>10000</item>
         <item>50000</item>
         <item>100000</item>

@@ -8,6 +8,7 @@ import android.support.v4.util.Pair;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -120,6 +121,7 @@ public class VkApiHelper {
             observable = getLastMessageIdAndTime()
                     .flatMap(q -> getStartsInfos(q.getLastMessageId(), q.getLastMessageId())
                             .zipWith(Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS), (s, l) -> s)
+                            .doOnNext(s->LogUtils.d(s.toString()))
                             .concatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .takeWhile(stats -> stats.getTime() > (q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
@@ -140,12 +142,18 @@ public class VkApiHelper {
     }
 
     private Observable<StartInfo> getStartsInfos(int lastId, int value) {
-        // FIXME: 26.09.16 -- 1918 сообщений становятся 1900
+        if (value == 0) {
+            return Observable.just(new StartInfo(lastId, 1, 0));
+        }
         int requestsCount = (value - 1) / MESSAGES_PER_REQUEST + 1;
+        int messagesInLastArg = (value - (requestsCount - 1) * MESSAGES_PER_REQUEST) % MESSAGES_PER_ARG;
+        messagesInLastArg = messagesInLastArg == 0 ? MESSAGES_PER_ARG : messagesInLastArg;
+        final int finalMessagesInLastArg = messagesInLastArg;
         return Observable.range(0, requestsCount)
                 .map(i -> new StartInfo(
                         lastId - i * MESSAGES_PER_REQUEST,
-                        Math.min(ARGS_PER_REQUEST, (value - i * MESSAGES_PER_REQUEST) / MESSAGES_PER_ARG)
+                        Math.min(ARGS_PER_REQUEST, (value - i * MESSAGES_PER_REQUEST - 1) / MESSAGES_PER_ARG + 1),
+                        i != requestsCount - 1 ? MESSAGES_PER_ARG : finalMessagesInLastArg
                 ));
     }
 
@@ -199,7 +207,11 @@ public class VkApiHelper {
         for (int i = 0; i < ARGS_PER_REQUEST; i++) {
             args[i * 2] = "ids" + (i + 1);
             if (i < startInfo.getArgsCount()) {
-                args[i * 2 + 1] = getIdsString(startInfo.getStart() - i * MESSAGES_PER_ARG, MESSAGES_PER_ARG);
+                if (i == startInfo.getArgsCount() - 1) {
+                    args[i * 2 + 1] = getIdsString(startInfo.getStart() - i * MESSAGES_PER_ARG, startInfo.getMessagesPerLastArg());
+                } else {
+                    args[i * 2 + 1] = getIdsString(startInfo.getStart() - i * MESSAGES_PER_ARG, MESSAGES_PER_ARG);
+                }
             } else {
                 args[i * 2 + 1] = "";
             }
