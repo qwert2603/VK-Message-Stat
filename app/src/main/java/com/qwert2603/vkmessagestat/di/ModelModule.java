@@ -2,6 +2,7 @@ package com.qwert2603.vkmessagestat.di;
 
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
+import com.qwert2603.vkmessagestat.vkapihelper.VkRequestSender;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -33,5 +34,11 @@ public class ModelModule {
     @Singleton
     VkApiHelper mVkApiHelper() {
         return new VkApiHelper();
+    }
+
+    @Provides
+    @Singleton
+    VkRequestSender mVkRequestSender() {
+        return new VkRequestSender();
     }
 }

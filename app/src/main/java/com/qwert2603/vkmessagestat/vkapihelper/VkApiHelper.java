@@ -1,11 +1,9 @@
 package com.qwert2603.vkmessagestat.vkapihelper;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.support.v4.util.Pair;
 
 import com.qwert2603.vkmessagestat.Const;
+import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
 import com.vk.sdk.VKSdk;
@@ -27,56 +25,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 
 public class VkApiHelper {
 
-    /**
-     * Задержка перед следующим запросом.
-     * Чтобы запросы не посылались слишком часто. (Не больше 3 в секунду).
-     */
-    public final long nextRequestDelay = 420;
+    @Inject
+    VkRequestSender mVkRequestSender;
 
-    /**
-     * Время, когда можно посылать следующий запрос.
-     */
-    private long nextRequestTime;
-
-    {
-        nextRequestTime = SystemClock.uptimeMillis();
-    }
-
-    /**
-     * Обрботчик отправки запросов
-     */
-    private final Handler mHandler;
-
-    {
-        mHandler = new Handler(Looper.getMainLooper());
-    }
-
-    /**
-     * Отправить запрос.
-     * Запросы выполняются последовательно.
-     * Переданный запрос будет отправлен когда придет его время.
-     */
-    public synchronized void sendRequest(VKRequest request, VKRequest.VKRequestListener listener) {
-        if (!VKSdk.isLoggedIn()) {
-            return;
-        }
-        if (nextRequestTime <= SystemClock.uptimeMillis()) {
-            request.executeWithListener(listener);
-            nextRequestTime = SystemClock.uptimeMillis();
-        } else {
-            mHandler.postAtTime(() -> {
-                if (VKSdk.isLoggedIn()) {
-                    request.executeWithListener(listener);
-                }
-            }, nextRequestTime);
-        }
-        nextRequestTime += nextRequestDelay;
+    public VkApiHelper() {
+        VkMessageStatApplication.getAppComponent().inject(VkApiHelper.this);
     }
 
     public void logOut() {
@@ -118,7 +79,7 @@ public class VkApiHelper {
                     .reduce(IntegerCountMap::addAll);
         } else {
             observable = getLastMessageIdAndTime()
-                    .flatMap(q -> Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS)
+                    .flatMap(q -> Observable.interval(VkRequestSender.NEXT_REQUEST_DELAY - 50, TimeUnit.MILLISECONDS)
                             .onBackpressureBuffer()
                             .zipWith(getStartsInfos(q.getLastMessageId(), q.getLastMessageId()), (l, s) -> s)
                             .concatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
@@ -160,7 +121,7 @@ public class VkApiHelper {
         return Observable.create(subscriber -> {
             VKRequest vkRequest = new VKRequest("execute.getStat", createVkParams(startInfo));
             vkRequest.setUseLooperForCallListener(false);
-            sendRequest(vkRequest, new VKRequest.VKRequestListener() {
+            mVkRequestSender.sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     if (subscriber.isUnsubscribed()) {
@@ -231,7 +192,7 @@ public class VkApiHelper {
         return Observable.create(subscriber -> {
             VKRequest vkRequest = new VKRequest("execute.lastIdAndTime");
             vkRequest.setUseLooperForCallListener(false);
-            sendRequest(vkRequest, new VKRequest.VKRequestListener() {
+            mVkRequestSender.sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     try {
@@ -272,7 +233,7 @@ public class VkApiHelper {
             );
             VKRequest request = VKApi.friends().get(vkParameters);
             request.setUseLooperForCallListener(false);
-            sendRequest(request, new VKRequest.VKRequestListener() {
+            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     subscriber.onNext((VKUsersArray) response.parsedModel);
@@ -328,7 +289,7 @@ public class VkApiHelper {
         return Observable.create(subscriber -> {
             VKRequest request = VKApi.users().get(vkParameters);
             request.setUseLooperForCallListener(false);
-            sendRequest(request, new VKRequest.VKRequestListener() {
+            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
                 @Override
                 @SuppressWarnings("unchecked")
                 public void onComplete(VKResponse response) {
@@ -374,7 +335,7 @@ public class VkApiHelper {
                             VKApiConst.USER_ID, userId, VKApiConst.MESSAGE, message);
                     VKRequest request = new VKRequest("messages.send", parameters);
                     request.setUseLooperForCallListener(false);
-                    sendRequest(request, new VKRequest.VKRequestListener() {
+                    mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
                         @Override
                         public void onComplete(VKResponse response) {
                             subscriber.onNext(token);

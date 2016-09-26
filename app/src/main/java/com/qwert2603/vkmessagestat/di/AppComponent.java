@@ -8,6 +8,7 @@ import com.qwert2603.vkmessagestat.prelude.quantityinterval.QuantityIntervalView
 import com.qwert2603.vkmessagestat.prelude.timeinterval.TimeIntervalViewHolder;
 import com.qwert2603.vkmessagestat.results.ResultsFragment;
 import com.qwert2603.vkmessagestat.results.ResultsPresenter;
+import com.qwert2603.vkmessagestat.vkapihelper.VkApiHelper;
 
 import javax.inject.Singleton;
 
@@ -37,4 +38,6 @@ public interface AppComponent {
     void inject(DataManagerImpl dataManagerImpl);
 
     void inject(OneResultViewHolder oneResultViewHolder);
+
+    void inject(VkApiHelper vkApiHelper);
 }
