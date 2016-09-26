@@ -8,7 +8,6 @@ import android.support.v4.util.Pair;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
-import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -107,7 +106,7 @@ public class VkApiHelper {
                     })
                     .flatMap(q -> getStartsInfos(q.getLastMessageId(), value != -1 ? value : q.getLastMessageId()))
                     .flatMap(startInfo -> doGetMessageStatistic(startInfo, 0))
-                    .serialize()
+                    .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
                     .map(Stats::getStatsMap)
                     .doOnNext(map -> {
                         progress[0] += MESSAGES_PER_ARG;
@@ -121,11 +120,9 @@ public class VkApiHelper {
             observable = getLastMessageIdAndTime()
                     .flatMap(q -> getStartsInfos(q.getLastMessageId(), q.getLastMessageId())
                             .zipWith(Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS), (s, l) -> s)
-                            .flatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
-                            .serialize()
+                            .concatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .takeWhile(stats -> stats.getTime() > (q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
-                            .doOnNext(stats -> LogUtils.d(stats.toString()))
                             .doOnNext(stats -> {
                                 int hoursDone = (q.getTime() - stats.getTime()) / Const.SECONDS_PER_HOUR;
                                 if (hoursDone < 0) {
@@ -143,6 +140,7 @@ public class VkApiHelper {
     }
 
     private Observable<StartInfo> getStartsInfos(int lastId, int value) {
+        // FIXME: 26.09.16 -- 1918 сообщений становятся 1900
         int requestsCount = (value - 1) / MESSAGES_PER_REQUEST + 1;
         return Observable.range(0, requestsCount)
                 .map(i -> new StartInfo(
@@ -158,6 +156,9 @@ public class VkApiHelper {
             sendRequest(vkRequest, new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
+                    if (subscriber.isUnsubscribed()) {
+                        return;
+                    }
                     try {
                         JSONArray jsonArray = response.json.getJSONArray("response");
                         int length1 = jsonArray.length();
@@ -174,7 +175,9 @@ public class VkApiHelper {
                                     }
                                     map.add(ids.getInt(i), 1);
                                 }
-                                subscriber.onNext(new Stats(map, time.getInt(0)));
+                                if (!subscriber.isUnsubscribed()) {
+                                    subscriber.onNext(new Stats(map, time.getInt(0)));
+                                }
                             }
                         }
                         subscriber.onCompleted();
