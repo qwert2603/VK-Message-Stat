@@ -14,7 +14,7 @@
         android:layout_height="96dp"
         android:src="@drawable/hours"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="2dp"/>
 
     <TextView
         android:id="@+id/interval_text_view"
@@ -23,7 +23,8 @@
         android:layout_gravity="center_horizontal|bottom"
         android:gravity="center_horizontal"
         android:layout_marginBottom="4dp"
-        android:text="12 hours"
+        android:singleLine="true"
+        android:text="12000000 hours"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
 

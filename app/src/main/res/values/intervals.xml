@@ -13,7 +13,7 @@
         <item>48</item>
         <item>168</item>
         <item>720</item>
-        <!--<item>8766</item>-->
+        <item>8766</item>
     </integer-array>
 
     <integer-array name="quantity_intervals">

@@ -27,8 +27,6 @@ class IntegerCountMap : HashMap<Int, Int>() {
         return this
     }
 
-    fun notEmpty() = !isEmpty()
-
     fun keysAsList() = keys.toList()
 
     fun getPercent(key: Int) : Double {

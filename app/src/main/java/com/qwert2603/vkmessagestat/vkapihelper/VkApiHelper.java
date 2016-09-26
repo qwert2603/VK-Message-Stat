@@ -8,7 +8,6 @@ import android.support.v4.util.Pair;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.results.IntervalType;
-import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -110,7 +109,7 @@ public class VkApiHelper {
                     .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
                     .map(Stats::getStatsMap)
                     .doOnNext(map -> {
-                        progress[0] += MESSAGES_PER_ARG;
+                        progress[0] += map.getTotalSum();
                         if (progress[0] > progress[1]) {
                             progress[0] = progress[1];
                         }
@@ -119,9 +118,9 @@ public class VkApiHelper {
                     .reduce(IntegerCountMap::addAll);
         } else {
             observable = getLastMessageIdAndTime()
-                    .flatMap(q -> getStartsInfos(q.getLastMessageId(), q.getLastMessageId())
-                            .zipWith(Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS), (s, l) -> s)
-                            .doOnNext(s->LogUtils.d(s.toString()))
+                    .flatMap(q -> Observable.interval(nextRequestDelay - 50, TimeUnit.MILLISECONDS)
+                            .onBackpressureBuffer()
+                            .zipWith(getStartsInfos(q.getLastMessageId(), q.getLastMessageId()), (l, s) -> s)
                             .concatMap(startInfo -> doGetMessageStatistic(startInfo, q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .takeWhile(stats -> stats.getTime() > (q.getTime() - value * Const.SECONDS_PER_HOUR))
                             .defaultIfEmpty(new Stats(new IntegerCountMap(), Integer.MAX_VALUE))
