@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.qwert2603.vkmessagestat.R
+import com.qwert2603.vkmessagestat.ScrollToRecyclerViewListener
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.BaseFragment
 import com.qwert2603.vkmessagestat.base.recyclerview.ClickCallbacks
@@ -20,10 +21,10 @@ import com.qwert2603.vkmessagestat.results.ResultsFragment
 import kotlinx.android.synthetic.main.fragment_prelude.*
 import javax.inject.Inject
 
-class PreludeFragment :  BaseFragment<PreludePresenter>(), PreludeView {
+class PreludeFragment : BaseFragment<PreludePresenter>(), PreludeView {
 
     companion object {
-        fun newInstance() : PreludeFragment = PreludeFragment()
+        fun newInstance(): PreludeFragment = PreludeFragment()
     }
 
     @Inject @JvmField
@@ -59,6 +60,7 @@ class PreludeFragment :  BaseFragment<PreludePresenter>(), PreludeView {
                 mPreludePresenter.onTimeSelected(position)
             }
         }
+        time_interval_recycler_view.addOnScrollListener(ScrollToRecyclerViewListener(scroll_view))
 
         quantity_interval_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         quantity_interval_recycler_view.adapter = mQuantityIntervalAdapter
@@ -67,6 +69,7 @@ class PreludeFragment :  BaseFragment<PreludePresenter>(), PreludeView {
                 mPreludePresenter.onQuantitySelected(position)
             }
         }
+        quantity_interval_recycler_view.addOnScrollListener(ScrollToRecyclerViewListener(scroll_view))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

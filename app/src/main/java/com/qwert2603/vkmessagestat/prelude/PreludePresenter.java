@@ -28,7 +28,7 @@ public class PreludePresenter extends BasePresenter<Object, PreludeView> {
     private List<QuantityInterval> mQuantityIntervals;
 
     public PreludePresenter() {
-        VkMessageStatApplication.getAppComponent().inject(PreludePresenter.this);
+        VkMessageStatApplication.Companion.getAppComponent().inject(PreludePresenter.this);
         int[] time_intervals = mAppContext.getResources().getIntArray(R.array.time_intervals);
         mTimeIntervals = new ArrayList<>(time_intervals.length);
         for (int time_interval : time_intervals) {

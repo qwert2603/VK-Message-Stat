@@ -37,7 +37,7 @@ public class VkApiHelper {
     VkRequestSender mVkRequestSender;
 
     public VkApiHelper() {
-        VkMessageStatApplication.getAppComponent().inject(VkApiHelper.this);
+        VkMessageStatApplication.Companion.getAppComponent().inject(VkApiHelper.this);
     }
 
     public void logOut() {

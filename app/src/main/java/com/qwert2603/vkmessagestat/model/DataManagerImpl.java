@@ -31,7 +31,7 @@ public class DataManagerImpl implements DataManager {
     Scheduler mUIScheduler;
 
     public DataManagerImpl() {
-        VkMessageStatApplication.getAppComponent().inject(DataManagerImpl.this);
+        VkMessageStatApplication.Companion.getAppComponent().inject(DataManagerImpl.this);
     }
 
     @NonNull

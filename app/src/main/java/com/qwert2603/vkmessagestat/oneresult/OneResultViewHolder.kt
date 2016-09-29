@@ -5,8 +5,6 @@ import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewAdapter
 import com.qwert2603.vkmessagestat.base.recyclerview.BaseRecyclerViewHolder
 import com.qwert2603.vkmessagestat.loadPhoto
-import com.qwert2603.vkmessagestat.mock.MockOneResultPresenter
-import com.qwert2603.vkmessagestat.mock.Mocks
 import com.qwert2603.vkmessagestat.model.OneResult
 import kotlinx.android.synthetic.main.item_one_result.view.*
 import javax.inject.Inject
@@ -14,14 +12,11 @@ import javax.inject.Inject
 class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneResult, OneResultViewHolder>) :
         BaseRecyclerViewHolder<OneResult, OneResultPresenter>(itemView, adapter), OneResultView {
 
-    @Inject @JvmField
-    var oneResultPresenter : OneResultPresenter = MockOneResultPresenter()
+    @Inject
+    lateinit var oneResultPresenter : OneResultPresenter
 
-    override fun bindPresenter() {
-        if (oneResultPresenter == Mocks.MOCK_ONE_RESULT_PRESENTER) {
-            VkMessageStatApplication.getAppComponent().inject(this);
-        }
-        super.bindPresenter()
+    init {
+        VkMessageStatApplication.getAppComponent().inject(this)
     }
 
     override fun getPresenter() = oneResultPresenter

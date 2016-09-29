@@ -4,7 +4,6 @@ import android.content.Context
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.BasePresenter
 import com.qwert2603.vkmessagestat.isInternetConnected
-import com.qwert2603.vkmessagestat.mock.Mocks
 import com.qwert2603.vkmessagestat.model.DataManager
 import com.qwert2603.vkmessagestat.model.Results
 import com.qwert2603.vkmessagestat.util.LogUtils
@@ -12,21 +11,18 @@ import javax.inject.Inject
 
 class ResultsPresenter : BasePresenter<Results, ResultsView>() {
 
-    @Inject @JvmField
-    var appContext: Context = Mocks.MOCK_CONTEXT
+    @Inject
+    lateinit var appContext: Context
 
-    @Inject @JvmField //todo: use lateinit
-    var dataManager: DataManager = Mocks.MOCK_DATA_MANAGER
+    @Inject
+    lateinit var dataManager: DataManager
 
     private var error = false
 
     private var calculating = false
 
-    override fun bindView(view: ResultsView?) {
-        super.bindView(view)
-        if (appContext == Mocks.MOCK_CONTEXT) {
-            VkMessageStatApplication.getAppComponent().inject(this)
-        }
+    init {
+        VkMessageStatApplication.getAppComponent().inject(this)
     }
 
     fun setInterval(intervalType: IntervalType, value: Int) {

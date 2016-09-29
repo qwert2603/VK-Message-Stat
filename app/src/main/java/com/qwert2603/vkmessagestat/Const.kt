@@ -1,7 +1,7 @@
 package com.qwert2603.vkmessagestat
 
 object Const {
-    @JvmField val UI_THREAD = "ui_thread"
-    @JvmField val IO_THREAD = "io_thread"
-    @JvmField val SECONDS_PER_HOUR = 3600
+    const val UI_THREAD = "ui_thread"
+    const val IO_THREAD = "io_thread"
+    const val SECONDS_PER_HOUR = 3600
 }
