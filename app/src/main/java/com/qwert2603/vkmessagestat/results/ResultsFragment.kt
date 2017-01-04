@@ -29,11 +29,11 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
         }
     }
 
-    @Inject @JvmField
-    var resultsPresenter = ResultsPresenter()
+    @Inject
+    lateinit var resultsPresenter: ResultsPresenter
 
-    @Inject @JvmField
-    var resultsAdapter = ResultsAdapter()
+    @Inject
+    lateinit var resultsAdapter: ResultsAdapter
 
     override fun getPresenter() = resultsPresenter
 

@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.item_interval.view.*
 import javax.inject.Inject
 
 class TimeIntervalViewHolder(itemView: View, adapter: BaseRecyclerViewAdapter<TimeInterval, TimeIntervalViewHolder>)
-: BaseRecyclerViewHolder<TimeInterval, TimeIntervalPresenter>(itemView, adapter), TimeIntervalView {
+    : BaseRecyclerViewHolder<TimeInterval, TimeIntervalPresenter>(itemView, adapter), TimeIntervalView {
 
     @Inject
     lateinit var mTimeIntervalPresenter: TimeIntervalPresenter

@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.item_interval.view.*
 import javax.inject.Inject
 
 class QuantityIntervalViewHolder(itemView: View, adapter: BaseRecyclerViewAdapter<QuantityInterval, QuantityIntervalViewHolder>)
-: BaseRecyclerViewHolder<QuantityInterval, QuantityIntervalPresenter>(itemView, adapter), QuantityIntervalView {
+    : BaseRecyclerViewHolder<QuantityInterval, QuantityIntervalPresenter>(itemView, adapter), QuantityIntervalView {
 
     @Inject
     lateinit var mQuantityIntervalPresenter: QuantityIntervalPresenter
