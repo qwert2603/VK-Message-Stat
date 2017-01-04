@@ -15,13 +15,11 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
-import com.vk.sdk.api.model.VKUsersArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +45,6 @@ public class VkApiHelper {
     }
 
     private static final int USERS_PER_REQUEST = 1000;
-    private static final int FRIENDS_PER_REQUEST = 5000;
     private static final int MESSAGES_PER_ARG = 100;
     private static final int ARGS_PER_REQUEST = 25;
     private static final int MESSAGES_PER_REQUEST = MESSAGES_PER_ARG * ARGS_PER_REQUEST;
@@ -214,46 +211,6 @@ public class VkApiHelper {
         });
     }
 
-    public Observable<List<VKApiUserFull>> getFriends() {
-        Observable<List<VKApiUserFull>> firstFriends = getFriends(FRIENDS_PER_REQUEST, 0).cache();
-        return firstFriends.map(friends -> ((VKUsersArray) friends).getCount())
-                .flatMap(i -> Observable.range(0, (i - 1) / FRIENDS_PER_REQUEST + 1))
-                .flatMap(i -> i == 0 ? firstFriends : getFriends(FRIENDS_PER_REQUEST, i * FRIENDS_PER_REQUEST))
-                .flatMap(Observable::from)
-                .toList();
-    }
-
-    public Observable<List<VKApiUserFull>> getFriends(int count, int offset) {
-        return Observable.create(subscriber -> {
-            VKParameters vkParameters = VKParameters.from(
-                    VKApiConst.FIELDS, "photo_200, can_write_private_message",
-                    "order", "hints",
-                    VKApiConst.COUNT, String.valueOf(count),
-                    VKApiConst.OFFSET, String.valueOf(offset)
-            );
-            VKRequest request = VKApi.friends().get(vkParameters);
-            request.setUseLooperForCallListener(false);
-            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
-                @Override
-                public void onComplete(VKResponse response) {
-                    subscriber.onNext((VKUsersArray) response.parsedModel);
-                    subscriber.onCompleted();
-                }
-
-                @Override
-                public void onError(VKError error) {
-                    subscriber.onError(new RuntimeException(error.toString()));
-                }
-            });
-        });
-    }
-
-    public Observable<VKApiUserFull> getUserById(int userId) {
-        return getUsersById(Collections.singletonList(userId))
-                .flatMap(Observable::from)
-                .first();
-    }
-
     /**
      * @param userIdList список id пользователей.
      * @return объекты пользователей.
@@ -275,16 +232,6 @@ public class VkApiHelper {
                 .toList();
     }
 
-    /**
-     * @return пользователь, который использует приложение.
-     */
-    public Observable<VKApiUserFull> getMyself() {
-        VKParameters vkParameters = VKParameters.from(VKApiConst.FIELDS, "photo_200");
-        return getUsers(vkParameters)
-                .flatMap(Observable::from)
-                .first();
-    }
-
     private Observable<List<VKApiUserFull>> getUsers(VKParameters vkParameters) {
         return Observable.create(subscriber -> {
             VKRequest request = VKApi.users().get(vkParameters);
@@ -303,51 +250,6 @@ public class VkApiHelper {
                 }
             });
         });
-    }
-
-    /**
-     * Исключение -- ошибка отправки сообщения
-     */
-    public static class SendMessageException extends Exception {
-        /**
-         * Объект для идентификации сообщения, которое не удалось отправить.
-         */
-        public Object mToken;
-
-        public SendMessageException(String detailMessage, Object token) {
-            super(detailMessage);
-            mToken = token;
-        }
-    }
-
-    /**
-     * Отправить сообщение.
-     *
-     * @param token объект, который будет передаст Observable, который вернет метод.
-     *              (для идентификации сообщения и адресата).
-     *              При ошибке будет передано исключение SendMessageException.
-     *              mToken этого иключения будет содержать переданный методу @param token.
-     */
-    public Observable<Object> sendMessage(int userId, String message, Object token) {
-        return Observable
-                .create(subscriber -> {
-                    VKParameters parameters = VKParameters.from(
-                            VKApiConst.USER_ID, userId, VKApiConst.MESSAGE, message);
-                    VKRequest request = new VKRequest("messages.send", parameters);
-                    request.setUseLooperForCallListener(false);
-                    mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
-                        @Override
-                        public void onComplete(VKResponse response) {
-                            subscriber.onNext(token);
-                            subscriber.onCompleted();
-                        }
-
-                        @Override
-                        public void onError(VKError error) {
-                            subscriber.onError(new SendMessageException(error.toString(), token));
-                        }
-                    });
-                });
     }
 
 }
