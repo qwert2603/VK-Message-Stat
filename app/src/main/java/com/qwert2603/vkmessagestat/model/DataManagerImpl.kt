@@ -52,13 +52,7 @@ class DataManagerImpl : DataManager {
         return mVkApiHelper.getUsersById(map.keysAsList())
                 .flatMap { Observable.from(it) }
                 .map { user -> OneResult(user, map.getPercent(user.id), map.getCount(user.id)) }
-                .toSortedList { r1, r2 -> compareReverse(r1.quantity, r2.quantity) }
-    }
-
-    fun compareReverse(i1: Int, i2: Int): Int {
-        if (i2 > i1) return 1
-        if (i2 == i1) return 0
-        return -1
+                .toSortedList { r1, r2 -> r2.quantity.compareTo(r1.quantity) }
     }
 
 }
