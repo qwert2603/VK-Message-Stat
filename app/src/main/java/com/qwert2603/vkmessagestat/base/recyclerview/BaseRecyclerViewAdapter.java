@@ -10,8 +10,6 @@ import java.util.List;
 /**
  * Базовый адаптер для {@link RecyclerView} для шаблона MVP.
  * Может передавать callback'и о нажатии и долгом нажатии на отдельный элемент.
- * {@link #setClickCallbacks(ClickCallbacks)}, {@link #setLongClickCallbacks(LongClickCallbacks)}.
- * Позволяет выделять отдельный элемент {@link #setSelectedItemPosition(int)}.
  *
  * @param <M>  тип модели, отображаемой в каждом элементе.
  * @param <VH> тип объекта (ViewHolder), отвечающего за отображение данных в отдельном элементе.
@@ -21,8 +19,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
 
     private volatile List<M> mModelList = new ArrayList<>();
     private ClickCallbacks mClickCallbacks;
-    private LongClickCallbacks mLongClickCallbacks;
-    private RecyclerViewSelector mRecyclerViewSelector = new RecyclerViewSelector(BaseRecyclerViewAdapter.this);
 
     public BaseRecyclerViewAdapter() {
     }
@@ -36,24 +32,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
         mClickCallbacks = clickCallbacks;
     }
 
-    /**
-     * Назначить callback для долгого нажатия на элемент.
-     *
-     * @param longClickCallbacks callback для долгого нажатия на элемент.
-     */
-    public void setLongClickCallbacks(LongClickCallbacks longClickCallbacks) {
-        mLongClickCallbacks = longClickCallbacks;
-    }
-
-    /**
-     * Установить позицию выделенного элемент.
-     *
-     * @param position позиция выделенного элемента.
-     */
-    public void setSelectedItemPosition(int position) {
-        mRecyclerViewSelector.setSelectedPosition(position);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(VH holder, int position) {
@@ -61,8 +39,6 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
         // назначаем модель viewHolder'у элемента.
         holder.bindPresenter();
         holder.setModel(model);
-        // отображаем выделен элемент или нет.
-        mRecyclerViewSelector.showWhetherItemSelected(holder.itemView, position);
     }
 
     @Override
@@ -97,9 +73,5 @@ public abstract class BaseRecyclerViewAdapter<M extends Identifiable, VH extends
 
     public ClickCallbacks getClickCallbacks() {
         return mClickCallbacks;
-    }
-
-    public LongClickCallbacks getLongClickCallbacks() {
-        return mLongClickCallbacks;
     }
 }

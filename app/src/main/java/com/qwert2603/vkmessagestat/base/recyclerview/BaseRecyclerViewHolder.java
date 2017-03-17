@@ -22,12 +22,6 @@ public abstract class BaseRecyclerViewHolder<M extends Identifiable, P extends B
                 adapter.getClickCallbacks().onItemClicked(getLayoutPosition());
             }
         });
-        itemView.setOnLongClickListener(v -> {
-            if (adapter.getLongClickCallbacks() != null) {
-                adapter.getLongClickCallbacks().onItemLongClicked(getLayoutPosition());
-            }
-            return true;
-        });
     }
 
     /**

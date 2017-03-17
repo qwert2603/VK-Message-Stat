@@ -15,7 +15,7 @@ class VkRequestSender {
          * Задержка перед следующим запросом.
          * Чтобы запросы не посылались слишком часто. (Не больше 3 в секунду).
          */
-        @JvmField val NEXT_REQUEST_DELAY: Long = 420
+        @JvmField val NEXT_REQUEST_DELAY: Long = 370
     }
 
     /**

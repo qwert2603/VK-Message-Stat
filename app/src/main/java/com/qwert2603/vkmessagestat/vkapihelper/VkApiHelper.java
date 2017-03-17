@@ -115,48 +115,50 @@ public class VkApiHelper {
     }
 
     private Observable<Stats> doGetMessageStatistic(StartInfo startInfo, int minTime) {
-        return Observable.create(subscriber -> {
-            VKRequest vkRequest = new VKRequest("execute.getStat", createVkParams(startInfo));
-            vkRequest.setUseLooperForCallListener(false);
-            mVkRequestSender.sendRequest(vkRequest, new VKRequest.VKRequestListener() {
-                @Override
-                public void onComplete(VKResponse response) {
-                    if (subscriber.isUnsubscribed()) {
-                        return;
-                    }
-                    try {
-                        JSONArray jsonArray = response.json.getJSONArray("response");
-                        int length1 = jsonArray.length();
-                        for (int j = 0; j < length1; j++) {
-                            JSONArray jsonArray1 = jsonArray.getJSONArray(j);
-                            JSONArray ids = jsonArray1.getJSONObject(0).getJSONArray("ids");
-                            JSONArray time = jsonArray1.getJSONObject(1).getJSONArray("time");
-                            int length = ids.length();
-                            if (length > 0) {
-                                IntegerCountMap map = new IntegerCountMap();
-                                for (int i = 0; i < length; i++) {
-                                    if (time.getInt(i) < minTime) {
-                                        break;
+        return Observable
+                .<Stats>create(subscriber -> {
+                    VKRequest vkRequest = new VKRequest("execute.getStat", createVkParams(startInfo));
+                    vkRequest.setUseLooperForCallListener(false);
+                    mVkRequestSender.sendRequest(vkRequest, new VKRequest.VKRequestListener() {
+                        @Override
+                        public void onComplete(VKResponse response) {
+                            if (subscriber.isUnsubscribed()) {
+                                return;
+                            }
+                            try {
+                                JSONArray jsonArray = response.json.getJSONArray("response");
+                                int length1 = jsonArray.length();
+                                for (int j = 0; j < length1; j++) {
+                                    JSONArray jsonArray1 = jsonArray.getJSONArray(j);
+                                    JSONArray ids = jsonArray1.getJSONObject(0).getJSONArray("ids");
+                                    JSONArray time = jsonArray1.getJSONObject(1).getJSONArray("time");
+                                    int length = ids.length();
+                                    if (length > 0) {
+                                        IntegerCountMap map = new IntegerCountMap();
+                                        for (int i = 0; i < length; i++) {
+                                            if (time.getInt(i) < minTime) {
+                                                break;
+                                            }
+                                            map.add(ids.getInt(i), 1);
+                                        }
+                                        if (!subscriber.isUnsubscribed()) {
+                                            subscriber.onNext(new Stats(map, time.getInt(0)));
+                                        }
                                     }
-                                    map.add(ids.getInt(i), 1);
                                 }
-                                if (!subscriber.isUnsubscribed()) {
-                                    subscriber.onNext(new Stats(map, time.getInt(0)));
-                                }
+                                subscriber.onCompleted();
+                            } catch (JSONException e) {
+                                subscriber.onError(e);
                             }
                         }
-                        subscriber.onCompleted();
-                    } catch (JSONException e) {
-                        subscriber.onError(e);
-                    }
-                }
 
-                @Override
-                public void onError(VKError error) {
-                    subscriber.onError(new RuntimeException(error.toString()));
-                }
-            });
-        });
+                        @Override
+                        public void onError(VKError error) {
+                            subscriber.onError(new RuntimeException(error.toString()));
+                        }
+                    });
+                })
+                .retry(3);
     }
 
     private VKParameters createVkParams(StartInfo startInfo) {
