@@ -49,7 +49,7 @@ class DataManagerImpl : DataManager {
     }
 
     private fun getOneResults(map: IntegerCountMap): Observable<List<OneResult>> {
-        return mVkApiHelper.getUsersById(map.keysAsList())
+        return mVkApiHelper.getUsersById(map.keys.toList())
                 .flatMap { Observable.from(it) }
                 .map { user -> OneResult(user, map.getPercent(user.id), map.getCount(user.id)) }
                 .toSortedList { r1, r2 -> r2.quantity.compareTo(r1.quantity) }

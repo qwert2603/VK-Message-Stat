@@ -2,8 +2,7 @@ package com.qwert2603.vkmessagestat.model
 
 import java.util.*
 
-// todo: make NOT via delegation, when possible. (kotlin ~1.0.7)
-class IntegerCountMap : MutableMap<Int, Int> by HashMap<Int, Int>() {
+class IntegerCountMap : HashMap<Int, Int>() {
 
     var totalSum = 0
 
@@ -27,8 +26,6 @@ class IntegerCountMap : MutableMap<Int, Int> by HashMap<Int, Int>() {
         }
         return this
     }
-
-    fun keysAsList() = keys.toList()
 
     fun getPercent(key: Int): Double {
         val v = get(key)

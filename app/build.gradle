@@ -32,7 +32,7 @@ kapt {
     generateStubs = true
 }
 dependencies {
-    ext.support_version = '25.1.0'
+    ext.support_version = '25.3.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -54,7 +54,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 buildscript {
-    ext.kotlin_version = '1.0.6'
+    ext.kotlin_version = '1.1.1'
     repositories {
         mavenCentral()
     }
