@@ -9,6 +9,8 @@ https://play.google.com/store/apps/details?id=com.qwert2603.vkmessagestat
 
 ![alt tag](https://github.com/qwert2603/VK-Message-Stat/blob/master/device-2016-06-29-185718.png)
 
+![alt tag](https://github.com/qwert2603/VK-Message-Stat/blob/master/device-2017-03-17-184330.png)
+
 ![alt tag](https://github.com/qwert2603/VK-Message-Stat/blob/master/device-2016-06-29-185751.png)
 
 ![alt tag](https://github.com/qwert2603/VK-Message-Stat/blob/master/device-2016-06-29-185737.png)
