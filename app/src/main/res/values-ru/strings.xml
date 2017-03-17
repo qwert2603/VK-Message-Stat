@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">VK Message Stats</string>
     <string name="all">Все</string>
-    <string name="calculating_statistic">Подсчет статистики...</string>
+    <string name="calculating_statistic">Подсчет статистики…</string>
     <string name="choose_interval_for_statistic">Выберите интервал для статистики:</string>
     <string name="loading_error">Ошибка загрузки!\nНажмите, чтобы повторить.</string>
     <string name="log_out">Выйти</string>

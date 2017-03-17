@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VK Messaggio Statistica</string>
+    <string name="all">Tutto</string>
+    <string name="calculating_statistic">Contando le statistiche…</string>
+    <string name="choose_interval_for_statistic">Scegli intervallo per le statistiche:</string>
+    <string name="loading_error">Errore durante il caricamento!\nFare clic per ripetere.</string>
+    <string name="log_out">Logout</string>
+    <string name="login_failed">Errore di autorizzazione!</string>
+    <string name="no_internet">No internet</string>
+    <string name="no_messages">alcun messaggio</string>
+    <string name="of">di</string>
+</resources>
