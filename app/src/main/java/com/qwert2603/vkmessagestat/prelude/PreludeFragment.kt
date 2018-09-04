@@ -2,7 +2,6 @@ package com.qwert2603.vkmessagestat.prelude
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.qwert2603.vkmessagestat.R
 import com.qwert2603.vkmessagestat.ScrollToRecyclerViewListener
@@ -44,14 +43,13 @@ class PreludeFragment : BaseFragment<PreludePresenter>(), PreludeView {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return container?.inflate(R.layout.fragment_prelude)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        time_interval_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         time_interval_recycler_view.adapter = mTimeIntervalAdapter
         mTimeIntervalAdapter.clickCallbacks = object : ClickCallbacks {
             override fun onItemClicked(position: Int) {
@@ -60,7 +58,6 @@ class PreludeFragment : BaseFragment<PreludePresenter>(), PreludeView {
         }
         time_interval_recycler_view.addOnScrollListener(ScrollToRecyclerViewListener(scroll_view))
 
-        quantity_interval_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         quantity_interval_recycler_view.adapter = mQuantityIntervalAdapter
         mQuantityIntervalAdapter.clickCallbacks = object : ClickCallbacks {
             override fun onItemClicked(position: Int) {
@@ -99,9 +96,9 @@ class PreludeFragment : BaseFragment<PreludePresenter>(), PreludeView {
     }
 
     override fun showLogOut() {
-        val intent = Intent(activity, MainActivity::class.java)
+        val intent = Intent(requireActivity(), MainActivity::class.java)
         startActivity(intent)
-        activity.finish()
+        requireActivity().finish()
     }
 
 }

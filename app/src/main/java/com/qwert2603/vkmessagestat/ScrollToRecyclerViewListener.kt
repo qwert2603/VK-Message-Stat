@@ -12,11 +12,11 @@ class ScrollToRecyclerViewListener(val scrollView: ScrollView) : RecyclerView.On
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         if (prevState == RecyclerView.SCROLL_STATE_DRAGGING && newState != prevState) {
-            if (recyclerView.y < scrollView.getVisibleRect().top) {
-                scrollView.scrollY = recyclerView.y.toInt()
-            } else if (recyclerView.y + recyclerView.height > scrollView.getVisibleRect().bottom) {
-                scrollView.scrollY = scrollView.scrollY +
-                        (recyclerView.y.toInt() + recyclerView.height - scrollView.getVisibleRect().bottom)
+            if (recyclerView.top < scrollView.getVisibleRect().top) {
+                scrollView.smoothScrollTo(0, recyclerView.top)
+            } else if (recyclerView.bottom > scrollView.getVisibleRect().bottom) {
+                val scrollY = scrollView.scrollY + recyclerView.bottom - scrollView.getVisibleRect().bottom
+                scrollView.smoothScrollTo(0, scrollY)
             }
         }
         prevState = newState

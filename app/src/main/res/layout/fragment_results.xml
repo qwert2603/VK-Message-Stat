@@ -1,107 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_animator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ViewAnimator
-        android:id="@+id/view_animator"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:text="@string/calculating_statistic"
+            android:textColor="@color/colorAccent"
+            android:textSize="22sp" />
+
+        <LinearLayout
+            android:id="@+id/progress_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_text_view"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/title_text_view"
+                android:id="@+id/done_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="16dp"
-                android:text="@string/calculating_statistic"
-                android:textColor="@color/colorAccent"
-                android:textSize="22sp"/>
+                android:layout_marginStart="16dp"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="28sp"
+                tools:text="10000000000" />
 
-            <LinearLayout
-                android:id="@+id/progress_layout"
+            <TextView
+                android:id="@+id/of_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/title_text_view">
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:text="@string/of"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/done_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:singleLine="true"
-                    android:text="10000000000"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="28sp"/>
-
-                <TextView
-                    android:id="@+id/of_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:singleLine="true"
-                    android:text="@string/of"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:id="@+id/total_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:singleLine="true"
-                    android:text="10000000000000"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="28sp"/>
-
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/total_text_view"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/progress_layout"
-                android:max="100"
-                android:progress="26"/>
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="28sp"
+                tools:text="10000000000000" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/results_recycler_view"
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progress_layout"
+            android:max="100"
+            tools:progress="26" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/no_messages"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp"/>
+    </RelativeLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/loading_error"
-            android:textColor="@color/colorAccent"
-            android:textSize="24sp"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/results_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
-    </ViewAnimator>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/no_messages"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/loading_error"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp" />
+
+</ViewAnimator>

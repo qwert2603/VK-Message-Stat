@@ -1,7 +1,7 @@
 package com.qwert2603.vkmessagestat.base
 
-import android.app.Fragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.qwert2603.vkmessagestat.R
 import kotlinx.android.synthetic.main.activity_fragment.*
@@ -16,10 +16,10 @@ abstract class SingleFragmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_fragment)
         setSupportActionBar(toolbar)
 
-        var fragment: Fragment? = fragmentManager.findFragmentById(R.id.fragment_container)
+        var fragment: Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (fragment == null) {
             fragment = createFragment()
-            fragmentManager
+            supportFragmentManager
                     .beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commitAllowingStateLoss()
@@ -27,6 +27,6 @@ abstract class SingleFragmentActivity : AppCompatActivity() {
     }
 
     fun setTitle(title: String) {
-        toolbar_title_text_view.text=title
+        toolbar.title = title
     }
 }
