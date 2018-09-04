@@ -1,8 +1,9 @@
 package com.qwert2603.vkmessagestat.results
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.qwert2603.vkmessagestat.R
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.base.BaseFragment
 import com.qwert2603.vkmessagestat.base.SingleFragmentActivity
+import com.qwert2603.vkmessagestat.base.recyclerview.ClickCallbacks
 import com.qwert2603.vkmessagestat.inflate
 import com.qwert2603.vkmessagestat.model.OneResult
 import com.qwert2603.vkmessagestat.showIfNotYet
@@ -53,10 +55,15 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        results_recycler_view.layoutManager = LinearLayoutManager(activity)
         results_recycler_view.adapter = resultsAdapter
 
         view_animator.getChildAt(Layer.LOADING_ERROR.ordinal).setOnClickListener { resultsPresenter.onReloadClicked() }
+
+        resultsAdapter.clickCallbacks = object : ClickCallbacks {
+            override fun onItemClicked(position: Int) {
+                presenter.onMoveToUserClicked(position)
+            }
+        }
     }
 
     override fun showTitle(title: String) {
@@ -85,5 +92,10 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     override fun showNoInternet() {
         Snackbar.make(view_animator, R.string.no_internet, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun moveToUser(vkUserId: Int) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://vk.com/id$vkUserId"))
+        startActivity(Intent.createChooser(intent,""))
     }
 }

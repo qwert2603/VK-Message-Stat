@@ -11,4 +11,5 @@ interface ResultsView : BaseView {
     fun showDone(done: Int)
     fun showResultList(oneResults: List<OneResult>)
     fun showNoInternet()
+    fun moveToUser(vkUserId: Int)
 }

@@ -95,4 +95,8 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
                 )
         mCompositeSubscription.add(subscription2)
     }
+
+    fun onMoveToUserClicked(position: Int) {
+        view.moveToUser(model.resultsList[position].user.id)
+    }
 }
