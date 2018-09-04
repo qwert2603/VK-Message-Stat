@@ -1,7 +1,5 @@
 package com.qwert2603.vkmessagestat.vkapihelper;
 
-import android.support.v4.util.Pair;
-
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
@@ -25,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import kotlin.Pair;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;

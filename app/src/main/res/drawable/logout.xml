@@ -9,19 +9,19 @@
         android:translateX="3"
         android:translateY="3">
 
-    <path
-        android:pathData="M 10 5v-5h-10v18h10v-5"
-        android:strokeWidth="1.6"
-        android:strokeColor="#FFF"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
+        <path
+            android:pathData="M 10 5v-5h-10v18h10v-5"
+            android:strokeColor="#FFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.6" />
 
-    <path
-        android:pathData="M 5 9h11l-2 -2m2 2l-2 2"
-        android:strokeWidth="1.6"
-        android:strokeColor="#FFF"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"/>
+        <path
+            android:pathData="M 5 9h11l-2 -2m2 2l-2 2"
+            android:strokeColor="#FFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.6" />
 
     </group>
 

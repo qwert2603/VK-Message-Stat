@@ -9,7 +9,7 @@ import com.qwert2603.vkmessagestat.oneresult.OneResultViewHolder
 
 class ResultsAdapter : BaseRecyclerViewAdapter<OneResult, OneResultViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): OneResultViewHolder
-            = OneResultViewHolder(parent?.inflate(R.layout.item_one_result), this)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OneResultViewHolder
+            = OneResultViewHolder(parent.inflate(R.layout.item_one_result), this)
 
 }

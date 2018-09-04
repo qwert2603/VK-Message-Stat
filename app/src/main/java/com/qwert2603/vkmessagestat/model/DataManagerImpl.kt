@@ -1,6 +1,5 @@
 package com.qwert2603.vkmessagestat.model
 
-import android.support.v4.util.Pair
 import com.qwert2603.vkmessagestat.Const
 import com.qwert2603.vkmessagestat.VkMessageStatApplication
 import com.qwert2603.vkmessagestat.results.IntervalType
