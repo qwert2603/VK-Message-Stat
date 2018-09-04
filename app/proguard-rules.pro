@@ -19,3 +19,29 @@
 -keepattributes SourceFile,LineNumberTable
 
 -keep class com.vk.sdk.api.model.** { *; }
+
+# picasso / okhttp
+-dontwarn javax.annotation.**
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+-dontwarn okhttp3.internal.platform.ConscryptPlatform
+-dontwarn okio.**
+-dontwarn com.squareup.okhttp.**
+-dontwarn javax.annotation.**
+
+# rxjava
+-dontwarn sun.misc.**
+
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-dontnote rx.internal.util.PlatformDependent
