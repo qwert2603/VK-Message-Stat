@@ -254,16 +254,7 @@ public class VkApiHelper {
     private Observable<List<OneResult.ResultInfo>> getUsers(List<Integer> usersIds) {
         LogUtils.d("getUsers " + usersIds);
         if (usersIds.isEmpty()) return Observable.just(Collections.emptyList());
-        return Observable.range(0, (usersIds.size() - 1) / USERS_PER_REQUEST + 1)
-                .map(i -> {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    int b = i * USERS_PER_REQUEST;
-                    int e = Math.min((i + 1) * USERS_PER_REQUEST, usersIds.size());
-                    for (int j = b; j < e; ++j) {
-                        stringBuilder.append(usersIds.get(j)).append(",");
-                    }
-                    return stringBuilder.toString();
-                })
+        return splitIds(usersIds, USERS_PER_REQUEST)
                 .map(idsString -> VKParameters.from(VKApiConst.USER_IDS, idsString, VKApiConst.FIELDS, "photo_200"))
                 .flatMap(vkParameters -> Observable
                         .create((Subscriber<? super List<VKApiUserFull>> subscriber) -> {
@@ -295,16 +286,7 @@ public class VkApiHelper {
     private Observable<List<OneResult.ResultInfo>> getGroups(List<Integer> groupsIds) {
         LogUtils.d("getGroups " + groupsIds);
         if (groupsIds.isEmpty()) return Observable.just(Collections.emptyList());
-        return Observable.range(0, (groupsIds.size() - 1) / GROUPS_PER_REQUEST + 1)
-                .map(i -> {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    int b = i * GROUPS_PER_REQUEST;
-                    int e = Math.min((i + 1) * GROUPS_PER_REQUEST, groupsIds.size());
-                    for (int j = b; j < e; ++j) {
-                        stringBuilder.append(groupsIds.get(j)).append(",");
-                    }
-                    return stringBuilder.toString();
-                })
+        return splitIds(groupsIds, GROUPS_PER_REQUEST)
                 .map(idsString -> VKParameters.from("group_ids", idsString, VKApiConst.FIELDS, "photo_200"))
                 .flatMap(vkParameters -> Observable
                         .create((Subscriber<? super List<GroupResponse>> subscriber) -> {
@@ -335,19 +317,10 @@ public class VkApiHelper {
     }
 
 
-    private Observable<List<OneResult.ResultInfo>> getChatsInfos(List<Integer> ids) {
-        LogUtils.d("getChatsInfos " + ids);
-        if (ids.isEmpty()) return Observable.just(Collections.emptyList());
-        return Observable.range(0, (ids.size() - 1) / CHATS_PER_REQUEST + 1)
-                .map(i -> {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    int b = i * CHATS_PER_REQUEST;
-                    int e = Math.min((i + 1) * CHATS_PER_REQUEST, ids.size());
-                    for (int j = b; j < e; ++j) {
-                        stringBuilder.append(ids.get(j)).append(",");
-                    }
-                    return stringBuilder.toString();
-                })
+    private Observable<List<OneResult.ResultInfo>> getChatsInfos(List<Integer> chatsIds) {
+        LogUtils.d("getChatsInfos " + chatsIds);
+        if (chatsIds.isEmpty()) return Observable.just(Collections.emptyList());
+        return splitIds(chatsIds, CHATS_PER_REQUEST)
                 .map(idsString -> VKParameters.from("chat_ids", idsString))
                 .flatMap(vkParameters -> Observable
                         .create((Subscriber<? super List<ChatResponse>> subscriber) -> {
@@ -375,6 +348,19 @@ public class VkApiHelper {
                         chatResponse.getPhotoUrl()
                 ))
                 .toList();
+    }
+
+    private Observable<String> splitIds(List<Integer> ids, int idsPerItem) {
+        return Observable.range(0, (ids.size() - 1) / idsPerItem + 1)
+                .map(i -> {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int b = i * idsPerItem;
+                    int e = Math.min((i + 1) * idsPerItem, ids.size());
+                    for (int j = b; j < e; ++j) {
+                        stringBuilder.append(ids.get(j)).append(",");
+                    }
+                    return stringBuilder.toString();
+                });
     }
 
 }
