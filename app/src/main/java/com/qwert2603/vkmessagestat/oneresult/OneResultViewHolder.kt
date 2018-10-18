@@ -13,7 +13,7 @@ class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneR
         BaseRecyclerViewHolder<OneResult, OneResultPresenter>(itemView, adapter), OneResultView {
 
     @Inject
-    lateinit var oneResultPresenter : OneResultPresenter
+    lateinit var oneResultPresenter: OneResultPresenter
 
     init {
         VkMessageStatApplication.getAppComponent().inject(this)
@@ -22,6 +22,10 @@ class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneR
     override fun getPresenter() = oneResultPresenter
 
     override fun setModel(oneResult: OneResult) = oneResultPresenter.setOneResult(oneResult)
+
+    override fun setCanClick(canClick: Boolean) {
+        itemView.isEnabled = canClick
+    }
 
     override fun showPhoto(url: String) = with(itemView) {
         photo_image_view.loadPhoto(url)

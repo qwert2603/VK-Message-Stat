@@ -97,9 +97,9 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     }
 
     fun onMoveToUserClicked(position: Int) {
-        val vkId = model.resultsList[position].id
-        if (vkId in 1 until 1_000_000_000) {
-            view.moveToUser(vkId.toInt())
+        val resultInfo = model.resultsList[position].resultInfo
+        if (resultInfo.canClick()) {
+            view.moveToUser(resultInfo.id.toInt())
         }
     }
 }
