@@ -45,3 +45,5 @@
 }
 
 -dontnote rx.internal.util.PlatformDependent
+
+-keep class com.qwert2603.vkmessagestat.vkapihelper.results.** { *; }
