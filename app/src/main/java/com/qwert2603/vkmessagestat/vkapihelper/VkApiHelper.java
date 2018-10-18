@@ -3,6 +3,7 @@ package com.qwert2603.vkmessagestat.vkapihelper;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
+import com.qwert2603.vkmessagestat.model.OneResult;
 import com.qwert2603.vkmessagestat.results.IntervalType;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -216,7 +217,7 @@ public class VkApiHelper {
      * @param userIdList список id пользователей.
      * @return объекты пользователей.
      */
-    public Observable<List<VKApiUserFull>> getUsersById(List<Integer> userIdList) {
+    public Observable<List<OneResult.ResultInfo>> getUsersById(List<Integer> userIdList) {
         return Observable.range(0, (userIdList.size() - 1) / USERS_PER_REQUEST + 1)
                 .map(i -> {
                     StringBuilder stringBuilder = new StringBuilder();
@@ -230,6 +231,11 @@ public class VkApiHelper {
                 .map(idsString -> VKParameters.from(VKApiConst.USER_IDS, idsString, VKApiConst.FIELDS, "photo_200"))
                 .flatMap(this::getUsers)
                 .flatMap(Observable::from)
+                .map(vkUser -> new OneResult.ResultInfo(
+                        vkUser.id,
+                        vkUser.first_name + " " + vkUser.last_name,
+                        vkUser.photo_200
+                ))
                 .toList();
     }
 

@@ -47,21 +47,18 @@ class DataManagerImpl : DataManager {
         mVkApiHelper.logOut()
     }
 
-    private fun getOneResults(map: IntegerCountMap): Observable<List<OneResult>> {
-        return mVkApiHelper.getUsersById(map.keys.toList())
-                .flatMap { Observable.from(it) }
-                .map { user ->
-                    OneResult(
-                            resultInfo = OneResult.ResultInfo(
-                                    id = user.id.toLong(),
-                                    name = "${user.first_name} ${user.last_name}",
-                                    photoUrl = user.photo_200
-                            ),
-                            percent = map.getPercent(user.id),
-                            quantity = map.getCount(user.id)
-                    )
-                }
-                .toSortedList { r1, r2 -> r2.quantity.compareTo(r1.quantity) }
-    }
+    private fun getOneResults(map: IntegerCountMap): Observable<List<OneResult>> =
+            mVkApiHelper.getUsersById(map.keys.toList())
+                    .map { resultsList ->
+                        resultsList
+                                .map {
+                                    OneResult(
+                                            resultInfo = it,
+                                            percent = map.getPercent(it.id.toInt()),
+                                            quantity = map.getCount(it.id.toInt())
+                                    )
+                                }
+                                .sortedByDescending { it.quantity }
+                    }
 
 }
