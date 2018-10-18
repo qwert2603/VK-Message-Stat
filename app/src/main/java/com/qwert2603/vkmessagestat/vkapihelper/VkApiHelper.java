@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 
 import kotlin.Pair;
 import rx.Observable;
+import rx.Subscriber;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 
@@ -213,23 +215,56 @@ public class VkApiHelper {
         });
     }
 
-    /**
-     * @param userIdList список id пользователей.
-     * @return объекты пользователей.
-     */
-    public Observable<List<OneResult.ResultInfo>> getUsersById(List<Integer> userIdList) {
-        return Observable.range(0, (userIdList.size() - 1) / USERS_PER_REQUEST + 1)
+    public Observable<List<OneResult.ResultInfo>> getResultInfos(List<Integer> resultsIdsList) {
+        List<Integer> usersIds = new ArrayList<>();
+        List<Integer> chatsIds = new ArrayList<>();
+        for (Integer id : resultsIdsList) {
+            (id < 1_000_000_000 ? usersIds : chatsIds).add(id);
+        }
+        final Observable<List<OneResult.ResultInfo>> usersResults = getUsers(usersIds);
+        final Observable<List<OneResult.ResultInfo>> chatsResults = getChatsInfos(chatsIds);
+        return Observable.zip(
+                usersResults,
+                chatsResults,
+                (u, ch) -> {
+                    List<OneResult.ResultInfo> all = new ArrayList<>();
+                    all.addAll(u);
+                    all.addAll(ch);
+                    return all;
+                }
+        );
+    }
+
+    private Observable<List<OneResult.ResultInfo>> getUsers(List<Integer> usersIds) {
+        return Observable.range(0, (usersIds.size() - 1) / USERS_PER_REQUEST + 1)
                 .map(i -> {
                     StringBuilder stringBuilder = new StringBuilder();
                     int b = i * USERS_PER_REQUEST;
-                    int e = Math.min((i + 1) * USERS_PER_REQUEST, userIdList.size());
+                    int e = Math.min((i + 1) * USERS_PER_REQUEST, usersIds.size());
                     for (int j = b; j < e; ++j) {
-                        stringBuilder.append(userIdList.get(j)).append(",");
+                        stringBuilder.append(usersIds.get(j)).append(",");
                     }
                     return stringBuilder.toString();
                 })
                 .map(idsString -> VKParameters.from(VKApiConst.USER_IDS, idsString, VKApiConst.FIELDS, "photo_200"))
-                .flatMap(this::getUsers)
+                .flatMap(vkParameters -> Observable
+                        .create((Subscriber<? super List<VKApiUserFull>> subscriber) -> {
+                            VKRequest request = VKApi.users().get(vkParameters);
+                            request.setUseLooperForCallListener(false);
+                            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
+                                @Override
+                                @SuppressWarnings("unchecked")
+                                public void onComplete(VKResponse response) {
+                                    subscriber.onNext((VKList<VKApiUserFull>) response.parsedModel);
+                                    subscriber.onCompleted();
+                                }
+
+                                @Override
+                                public void onError(VKError error) {
+                                    subscriber.onError(new RuntimeException(error.toString()));
+                                }
+                            });
+                        }))
                 .flatMap(Observable::from)
                 .map(vkUser -> new OneResult.ResultInfo(
                         vkUser.id,
@@ -239,24 +274,10 @@ public class VkApiHelper {
                 .toList();
     }
 
-    private Observable<List<VKApiUserFull>> getUsers(VKParameters vkParameters) {
-        return Observable.create(subscriber -> {
-            VKRequest request = VKApi.users().get(vkParameters);
-            request.setUseLooperForCallListener(false);
-            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
-                @Override
-                @SuppressWarnings("unchecked")
-                public void onComplete(VKResponse response) {
-                    subscriber.onNext((VKList<VKApiUserFull>) response.parsedModel);
-                    subscriber.onCompleted();
-                }
-
-                @Override
-                public void onError(VKError error) {
-                    subscriber.onError(new RuntimeException(error.toString()));
-                }
-            });
-        });
+    private Observable<List<OneResult.ResultInfo>> getChatsInfos(List<Integer> ids) {
+        return Observable.from(ids)
+                .map(id -> new OneResult.ResultInfo(id, "name " + id, null))
+                .toList();
     }
 
 }

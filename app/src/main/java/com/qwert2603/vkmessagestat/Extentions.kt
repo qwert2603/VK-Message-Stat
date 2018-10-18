@@ -11,8 +11,8 @@ import android.widget.ScrollView
 import android.widget.ViewAnimator
 import com.squareup.picasso.Picasso
 
-fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View
-        = LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
+fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View =
+        LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 
 
 fun ViewAnimator.showIfNotYet(child: Int) {
@@ -22,7 +22,14 @@ fun ViewAnimator.showIfNotYet(child: Int) {
 }
 
 
-fun ImageView.loadPhoto(url: String) = Picasso.with(context).load(url).into(this)
+fun ImageView.loadPhoto(url: String?) {
+    if (url != null) {
+        Picasso.with(context).load(url).into(this)
+    } else {
+        Picasso.with(context).cancelRequest(this)
+        setImageResource(R.drawable.last)
+    }
+}
 
 
 fun Context.isInternetConnected(): Boolean {
@@ -34,7 +41,7 @@ fun Context.isInternetConnected(): Boolean {
 fun <T : Comparable<T>> T.between(left: T, right: T): Boolean = left < this && this < right
 
 
-fun ScrollView.getVisibleRect() : Rect {
+fun ScrollView.getVisibleRect(): Rect {
     val rect = Rect()
     getLocalVisibleRect(rect)
     return rect

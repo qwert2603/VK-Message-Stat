@@ -27,7 +27,7 @@ class OneResultViewHolder(itemView: View?, adapter: BaseRecyclerViewAdapter<OneR
         itemView.isEnabled = canClick
     }
 
-    override fun showPhoto(url: String) = with(itemView) {
+    override fun showPhoto(url: String?) = with(itemView) {
         photo_image_view.loadPhoto(url)
     }
 

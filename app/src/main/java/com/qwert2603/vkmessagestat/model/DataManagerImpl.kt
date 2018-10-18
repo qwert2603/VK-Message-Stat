@@ -48,7 +48,7 @@ class DataManagerImpl : DataManager {
     }
 
     private fun getOneResults(map: IntegerCountMap): Observable<List<OneResult>> =
-            mVkApiHelper.getUsersById(map.keys.toList())
+            mVkApiHelper.getResultInfos(map.keys.toList())
                     .map { resultsList ->
                         resultsList
                                 .map {
