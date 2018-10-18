@@ -1,7 +1,6 @@
 package com.qwert2603.vkmessagestat.oneresult
 
 import com.qwert2603.vkmessagestat.base.BasePresenter
-import com.qwert2603.vkmessagestat.getPhoto
 import com.qwert2603.vkmessagestat.model.OneResult
 
 open class OneResultPresenter : BasePresenter<OneResult, OneResultView>() {
@@ -12,8 +11,8 @@ open class OneResultPresenter : BasePresenter<OneResult, OneResultView>() {
 
     override fun onUpdateView(view: OneResultView) {
         if (model != null) {
-            view.showName(model.user.first_name + " " + model.user.last_name)
-            view.showPhoto(model.user.getPhoto())
+            view.showName(model.name)
+            view.showPhoto(model.photoUrl)
             view.showPercent(model.percent)
             view.showQuantity(model.quantity)
         }

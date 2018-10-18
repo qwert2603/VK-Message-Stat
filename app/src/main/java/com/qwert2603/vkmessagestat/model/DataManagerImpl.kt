@@ -50,7 +50,15 @@ class DataManagerImpl : DataManager {
     private fun getOneResults(map: IntegerCountMap): Observable<List<OneResult>> {
         return mVkApiHelper.getUsersById(map.keys.toList())
                 .flatMap { Observable.from(it) }
-                .map { user -> OneResult(user, map.getPercent(user.id), map.getCount(user.id)) }
+                .map { user ->
+                    OneResult(
+                            id = user.id.toLong(),
+                            name = "${user.first_name} ${user.last_name}",
+                            photoUrl = user.photo_200,
+                            percent = map.getPercent(user.id),
+                            quantity = map.getCount(user.id)
+                    )
+                }
                 .toSortedList { r1, r2 -> r2.quantity.compareTo(r1.quantity) }
     }
 

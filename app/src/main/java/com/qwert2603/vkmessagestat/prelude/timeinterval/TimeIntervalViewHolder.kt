@@ -26,7 +26,7 @@ class TimeIntervalViewHolder(itemView: View, adapter: BaseRecyclerViewAdapter<Ti
     }
 
     override fun showIntervalImage(@DrawableRes drawableRes: Int) = with(itemView) {
-        interval_image_view.setImageResource(drawableRes)
+        interval_text_view.setCompoundDrawablesRelativeWithIntrinsicBounds(0, drawableRes, 0, 0)
     }
 
     override fun showTimeInterval(interval: TimeInterval) = with(itemView) {

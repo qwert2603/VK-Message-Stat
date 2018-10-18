@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.ViewAnimator
 import com.squareup.picasso.Picasso
-import com.vk.sdk.api.model.VKApiUser
 
 fun ViewGroup.inflate(layoutRes: Int, attachToRoot: Boolean = false): View
         = LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -21,9 +20,6 @@ fun ViewAnimator.showIfNotYet(child: Int) {
         displayedChild = child
     }
 }
-
-
-fun VKApiUser.getPhoto(): String = this.photo_200
 
 
 fun ImageView.loadPhoto(url: String) = Picasso.with(context).load(url).into(this)
