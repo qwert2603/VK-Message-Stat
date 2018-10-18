@@ -10,8 +10,8 @@ data class OneResult(
     data class ResultInfo(
             val id: Long,
             val name: String,
-            val photoUrl: String?
+            val photoUrl: String
     ) {
-        fun canClick() = id in 1 until 1_000_000_000
+        fun canClick() = id in -1_000_000_000 until 1_000_000_000
     }
 }

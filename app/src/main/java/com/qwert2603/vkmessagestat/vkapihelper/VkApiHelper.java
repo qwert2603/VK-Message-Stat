@@ -1,10 +1,12 @@
 package com.qwert2603.vkmessagestat.vkapihelper;
 
+import com.google.gson.Gson;
 import com.qwert2603.vkmessagestat.Const;
 import com.qwert2603.vkmessagestat.VkMessageStatApplication;
 import com.qwert2603.vkmessagestat.model.IntegerCountMap;
 import com.qwert2603.vkmessagestat.model.OneResult;
 import com.qwert2603.vkmessagestat.results.IntervalType;
+import com.qwert2603.vkmessagestat.util.LogUtils;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -20,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +38,7 @@ public class VkApiHelper {
 
     @Inject
     VkRequestSender mVkRequestSender;
+    private Gson gson = new Gson();
 
     public VkApiHelper() {
         VkMessageStatApplication.Companion.getAppComponent().inject(VkApiHelper.this);
@@ -47,6 +51,7 @@ public class VkApiHelper {
     }
 
     private static final int USERS_PER_REQUEST = 1000;
+    private static final int CHATS_PER_REQUEST = 100;
     private static final int MESSAGES_PER_ARG = 100;
     private static final int ARGS_PER_REQUEST = 25;
     private static final int MESSAGES_PER_REQUEST = MESSAGES_PER_ARG * ARGS_PER_REQUEST;
@@ -217,18 +222,28 @@ public class VkApiHelper {
 
     public Observable<List<OneResult.ResultInfo>> getResultInfos(List<Integer> resultsIdsList) {
         List<Integer> usersIds = new ArrayList<>();
+        List<Integer> groupsIds = new ArrayList<>();
         List<Integer> chatsIds = new ArrayList<>();
         for (Integer id : resultsIdsList) {
-            (id < 1_000_000_000 ? usersIds : chatsIds).add(id);
+            if (id < 0) {
+                groupsIds.add(-1 * id);
+            } else if (id < 1_000_000_000) {
+                usersIds.add(id);
+            } else {
+                chatsIds.add(id - 2_000_000_000);
+            }
         }
         final Observable<List<OneResult.ResultInfo>> usersResults = getUsers(usersIds);
+        final Observable<List<OneResult.ResultInfo>> groupsResults = getGroups(groupsIds);
         final Observable<List<OneResult.ResultInfo>> chatsResults = getChatsInfos(chatsIds);
         return Observable.zip(
                 usersResults,
+                groupsResults,
                 chatsResults,
-                (u, ch) -> {
+                (u, g, ch) -> {
                     List<OneResult.ResultInfo> all = new ArrayList<>();
                     all.addAll(u);
+                    all.addAll(g);
                     all.addAll(ch);
                     return all;
                 }
@@ -236,6 +251,8 @@ public class VkApiHelper {
     }
 
     private Observable<List<OneResult.ResultInfo>> getUsers(List<Integer> usersIds) {
+        LogUtils.d("getUsers " + usersIds);
+        if (usersIds.isEmpty()) return Observable.just(Collections.emptyList());
         return Observable.range(0, (usersIds.size() - 1) / USERS_PER_REQUEST + 1)
                 .map(i -> {
                     StringBuilder stringBuilder = new StringBuilder();
@@ -274,9 +291,88 @@ public class VkApiHelper {
                 .toList();
     }
 
+    private Observable<List<OneResult.ResultInfo>> getGroups(List<Integer> groupsIds) {
+        LogUtils.d("getGroups " + groupsIds);
+        if (groupsIds.isEmpty()) return Observable.just(Collections.emptyList());
+        return Observable.range(0, (groupsIds.size() - 1) / USERS_PER_REQUEST + 1)
+                .map(i -> {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int b = i * USERS_PER_REQUEST;
+                    int e = Math.min((i + 1) * USERS_PER_REQUEST, groupsIds.size());
+                    for (int j = b; j < e; ++j) {
+                        stringBuilder.append(groupsIds.get(j)).append(",");
+                    }
+                    return stringBuilder.toString();
+                })
+                .map(idsString -> VKParameters.from("group_ids", idsString, VKApiConst.FIELDS, "photo_200"))
+                .flatMap(vkParameters -> Observable
+                        .create((Subscriber<? super List<GroupResponse>> subscriber) -> {
+                            VKRequest request = new VKRequest("groups.getById", vkParameters);
+                            request.setUseLooperForCallListener(false);
+                            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
+                                @Override
+                                @SuppressWarnings("unchecked")
+                                public void onComplete(VKResponse response) {
+                                    final GetGroupsResponse getGroupsResponse = gson.fromJson(response.responseString, GetGroupsResponse.class);
+                                    subscriber.onNext(getGroupsResponse.getResponse());
+                                    subscriber.onCompleted();
+                                }
+
+                                @Override
+                                public void onError(VKError error) {
+                                    subscriber.onError(new RuntimeException(error.toString()));
+                                }
+                            });
+                        }))
+                .flatMap(Observable::from)
+                .map(vkCommunity -> new OneResult.ResultInfo(
+                        -1 * vkCommunity.getId(),
+                        vkCommunity.getName(),
+                        vkCommunity.getPhotoUrl()
+                ))
+                .toList();
+    }
+
+
     private Observable<List<OneResult.ResultInfo>> getChatsInfos(List<Integer> ids) {
-        return Observable.from(ids)
-                .map(id -> new OneResult.ResultInfo(id, "name " + id, null))
+        LogUtils.d("getChatsInfos " + ids);
+        if (ids.isEmpty()) return Observable.just(Collections.emptyList());
+        return Observable.range(0, (ids.size() - 1) / CHATS_PER_REQUEST + 1)
+                .map(i -> {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int b = i * CHATS_PER_REQUEST;
+                    int e = Math.min((i + 1) * CHATS_PER_REQUEST, ids.size());
+                    for (int j = b; j < e; ++j) {
+                        stringBuilder.append(ids.get(j)).append(",");
+                    }
+                    return stringBuilder.toString();
+                })
+                .map(idsString -> VKParameters.from("chat_ids", idsString))
+                .flatMap(vkParameters -> Observable
+                        .create((Subscriber<? super List<ChatResponse>> subscriber) -> {
+                            VKRequest request = new VKRequest("messages.getChat", vkParameters);
+                            request.setUseLooperForCallListener(false);
+                            mVkRequestSender.sendRequest(request, new VKRequest.VKRequestListener() {
+                                @Override
+                                @SuppressWarnings("unchecked")
+                                public void onComplete(VKResponse response) {
+                                    final GetChatsResponse getChatsResponse = gson.fromJson(response.responseString, GetChatsResponse.class);
+                                    subscriber.onNext(getChatsResponse.getResponse());
+                                    subscriber.onCompleted();
+                                }
+
+                                @Override
+                                public void onError(VKError error) {
+                                    subscriber.onError(new RuntimeException(error.toString()));
+                                }
+                            });
+                        }))
+                .flatMap(Observable::from)
+                .map(chatResponse -> new OneResult.ResultInfo(
+                        chatResponse.getId() + 2_000_000_000,
+                        chatResponse.getTitle(),
+                        chatResponse.getPhotoUrl()
+                ))
                 .toList();
     }
 

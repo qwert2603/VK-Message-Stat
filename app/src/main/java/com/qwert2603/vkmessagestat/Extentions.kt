@@ -22,14 +22,7 @@ fun ViewAnimator.showIfNotYet(child: Int) {
 }
 
 
-fun ImageView.loadPhoto(url: String?) {
-    if (url != null) {
-        Picasso.with(context).load(url).into(this)
-    } else {
-        Picasso.with(context).cancelRequest(this)
-        setImageResource(R.drawable.last)
-    }
-}
+fun ImageView.loadPhoto(url: String) = Picasso.with(context).load(url).into(this)
 
 
 fun Context.isInternetConnected(): Boolean {

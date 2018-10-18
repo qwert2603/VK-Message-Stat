@@ -20,7 +20,7 @@ class VkMessageStatApplication : Application() {
 
         sAppComponent = buildAppComponent()
 
-        VKSdk.customInitialize(this, resources.getInteger(R.integer.com_vk_sdk_AppId), "5.84")
+        VKSdk.customInitialize(this, resources.getInteger(R.integer.com_vk_sdk_AppId), "5.85")
 
 //        LogUtils.d(VKAccessToken.currentToken().accessToken)
 

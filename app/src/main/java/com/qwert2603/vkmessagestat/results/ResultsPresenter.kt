@@ -99,7 +99,7 @@ class ResultsPresenter : BasePresenter<Results, ResultsView>() {
     fun onMoveToUserClicked(position: Int) {
         val resultInfo = model.resultsList[position].resultInfo
         if (resultInfo.canClick()) {
-            view.moveToUser(resultInfo.id.toInt())
+            view.moveToPage(resultInfo.id.toInt())
         }
     }
 }

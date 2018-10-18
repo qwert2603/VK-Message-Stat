@@ -21,8 +21,10 @@ import javax.inject.Inject
 open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
 
     companion object {
-        @JvmField val INTERVAL_TYPE_ORDINAL_KEY = "interval_type_ordinal"
-        @JvmField val INTERVAL_VALUE_KEY = "interval_value"
+        @JvmField
+        val INTERVAL_TYPE_ORDINAL_KEY = "interval_type_ordinal"
+        @JvmField
+        val INTERVAL_VALUE_KEY = "interval_value"
 
         fun newInstance(args: Bundle): ResultsFragment {
             val fragment = ResultsFragment()
@@ -94,8 +96,13 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
         Snackbar.make(view_animator, R.string.no_internet, Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun moveToUser(vkUserId: Int) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://vk.com/id$vkUserId"))
-        startActivity(Intent.createChooser(intent,""))
+    override fun moveToPage(vkId: Int) {
+        val uriString = if (vkId > 0) {
+            "http://vk.com/id$vkId"
+        } else {
+            "http://vk.com/club${-1 * vkId}"
+        }
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+        startActivity(Intent.createChooser(intent, ""))
     }
 }
