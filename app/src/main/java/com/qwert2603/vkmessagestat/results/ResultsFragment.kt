@@ -96,13 +96,8 @@ open class ResultsFragment : BaseFragment<ResultsPresenter>(), ResultsView {
         Snackbar.make(view_animator, R.string.no_internet, Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun moveToPage(vkId: Int) {
-        val uriString = if (vkId > 0) {
-            "http://vk.com/id$vkId"
-        } else {
-            "http://vk.com/club${-1 * vkId}"
-        }
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+    override fun moveToPage(pageUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(pageUrl))
         startActivity(Intent.createChooser(intent, ""))
     }
 }
