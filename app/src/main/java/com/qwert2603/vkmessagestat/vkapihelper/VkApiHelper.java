@@ -50,7 +50,8 @@ public class VkApiHelper {
         }
     }
 
-    private static final int USERS_PER_REQUEST = 1000;
+    private static final int USERS_PER_REQUEST = 100;
+    private static final int GROUPS_PER_REQUEST = 100;
     private static final int CHATS_PER_REQUEST = 100;
     private static final int MESSAGES_PER_ARG = 100;
     private static final int ARGS_PER_REQUEST = 25;
@@ -294,11 +295,11 @@ public class VkApiHelper {
     private Observable<List<OneResult.ResultInfo>> getGroups(List<Integer> groupsIds) {
         LogUtils.d("getGroups " + groupsIds);
         if (groupsIds.isEmpty()) return Observable.just(Collections.emptyList());
-        return Observable.range(0, (groupsIds.size() - 1) / USERS_PER_REQUEST + 1)
+        return Observable.range(0, (groupsIds.size() - 1) / GROUPS_PER_REQUEST + 1)
                 .map(i -> {
                     StringBuilder stringBuilder = new StringBuilder();
-                    int b = i * USERS_PER_REQUEST;
-                    int e = Math.min((i + 1) * USERS_PER_REQUEST, groupsIds.size());
+                    int b = i * GROUPS_PER_REQUEST;
+                    int e = Math.min((i + 1) * GROUPS_PER_REQUEST, groupsIds.size());
                     for (int j = b; j < e; ++j) {
                         stringBuilder.append(groupsIds.get(j)).append(",");
                     }
