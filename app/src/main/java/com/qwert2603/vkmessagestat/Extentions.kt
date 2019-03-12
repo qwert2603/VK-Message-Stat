@@ -22,7 +22,7 @@ fun ViewAnimator.showIfNotYet(child: Int) {
 }
 
 
-fun ImageView.loadPhoto(url: String) = Picasso.with(context).load(url).into(this)
+fun ImageView.loadPhoto(url: String) = Picasso.get().load(url).into(this)
 
 
 fun Context.isInternetConnected(): Boolean {

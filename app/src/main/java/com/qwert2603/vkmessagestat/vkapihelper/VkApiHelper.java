@@ -208,6 +208,7 @@ public class VkApiHelper {
                 public void onComplete(VKResponse response) {
                     try {
                         JSONObject jsonObject = response.json.getJSONObject("response");
+                        LogUtils.d("getLastMessageIdAndTime " + jsonObject);
                         int lastId = jsonObject.getInt("lastId");
                         int time = jsonObject.getInt("time");
                         subscriber.onNext(new LastMessageIdAndTime(lastId, time));
